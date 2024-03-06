@@ -1,0 +1,14 @@
+Package: rwwa
+Type: Package
+Title: Tools for probabilistic attribution following the World Weather Attribution protocol
+Version: 0.1.0
+Author: Clair Barnes
+Maintainer: Clair Barnes <c.barnes22@imperial.ac.uk>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: CC BY-NC 4.0
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.1
+Depends:
+  extRemes
