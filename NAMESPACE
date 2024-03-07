@@ -1,7 +1,8 @@
 exportPattern("^[[:alpha:]]+")
 
-importFrom("stats", "setNames", "dnorm", "qnorm", "pnorm", "optim", "sd", "quantile")
+importFrom("stats", "setNames", "dnorm", "qnorm", "pnorm", "optim", "sd", "quantile", "cor")
 importFrom("extRemes", "devd", "qevd", "pevd")
 importFrom("grDevices", "adjustcolor")
 importFrom("graphics", "abline", "legend", "lines", "matplot", "mtext",
-               "par", "points", "polygon", "rug", "segments")
+               "par", "points", "polygon", "rug", "segments", "text")
+importFrom("utils", "read.csv")
