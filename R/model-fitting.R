@@ -61,6 +61,7 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev =
   # remove extraneous
   cov <- data[, covnm, drop = F]
   k <- length(covnm)
+  x <- data[,varnm]
 
   # should also add something to handle case with no covariates
 
@@ -72,11 +73,11 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev =
 
   # if looking at lower tail with a GEV, necessary to negate data and consider block maxima - add flag to keep track
   if (lower & (dist %in% c("gev"))) {
-    x <- data[,varnm]; if(minima) x <- -x
-    minima <- T
-  } else {
-    minima <- F
-  }
+    if(minima) x <- -x
+      minima <- T
+    } else {
+      minima <- F
+    }
 
   # fit model with appropriate number of parameters, pad if necessary
   init <- c("mu0" = mean(x), "sigma0" = sd(x), setNames(rep(0,k), paste0("alpha_", covnm)))
