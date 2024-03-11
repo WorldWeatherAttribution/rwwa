@@ -38,7 +38,7 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
 #'
 #' @param mdl List of attributes & parameters defining a nonstationary model, as returned by 'fit_ns'
 #' @param xcov String indicating the covariate to plot on the x-axis. Must appear in mdl$cov.
-#' @param fixed_cov Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case nonstationary parameters are returned for all values of the covariate(s) used to fit the model
+#' @param plot_cov Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case nonstationary parameters are returned for all values of the covariate(s) used to fit the model
 #' @param ci_cov (Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
@@ -52,7 +52,7 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, fixed_cov = NA, ci_cov = NA, ev, seed = 42, nsamp = 500,
+plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, nsamp = 500,
                           ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
@@ -80,9 +80,9 @@ plot_covtrend <- function(mdl, xcov, fixed_cov = NA, ci_cov = NA, ev, seed = 42,
   points(y, ev, col = "magenta", lwd = 2, pch = 0)
 
   # trend lines
-  lines(x[o], ns_pars(mdl, fixed_cov = fixed_cov)$loc[o], lwd = 3, col = "black", lty = 1)
-  lines(x[o], eff_return_level(mdl, 6, fixed_cov = fixed_cov)[o], col = "blue", lwd = 3, lty = 1)
-  lines(x[o], eff_return_level(mdl, 40, fixed_cov = fixed_cov)[o], col = "blue", lwd = 2, lty = 1)
+  lines(x[o], ns_pars(mdl, fixed_cov = plot_cov)$loc[o], lwd = 3, col = "black", lty = 1)
+  lines(x[o], eff_return_level(mdl, 6, fixed_cov = plot_cov)[o], col = "blue", lwd = 3, lty = 1)
+  lines(x[o], eff_return_level(mdl, 40, fixed_cov = plot_cov)[o], col = "blue", lwd = 2, lty = 1)
 
   # get confidence interval for mu' (if not required, set ci_cov to NA)
   if(!is.na(nsamp)) {
