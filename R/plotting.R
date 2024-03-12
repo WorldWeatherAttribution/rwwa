@@ -24,7 +24,8 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
        ylab = ylab, main = main, ylim = ylim)
 
   lines(mdl$data$year-0.5, ns_pars(mdl)$loc, col = adjustcolor("black", 1), lwd = lwd)
-  matplot(mdl$data$year-0.5, eff_return_level(mdl, c(6,40)), type = "l", lty = 1, add = T, col = adjustcolor("blue", 1), lwd = c(lwd, max(1,lwd -1)))
+  lines(mdl$data$year-0.5, eff_return_level(mdl, 6), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
+  lines(mdl$data$year-0.5, eff_return_level(mdl, 40), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = max(1,lwd -1))
 
   points(ev_year-0.5, ev, col = "magenta", lwd = 2, pch = 0)
 
