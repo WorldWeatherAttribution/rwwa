@@ -83,8 +83,9 @@ ns_pars <- function(mdl, fixed_cov = NA) {
   }
 
   # if fixed_cov contains extra covariates, drop them
-  fixed_cov <- fixed_cov[,mdl$covnm, drop = F]
+  fixed_cov <- fixed_cov[,sapply(colnames(fixed_cov), function(cnm) cnm %in% mdl$covnm), drop = F]
 
+  # if fixed_cov is missing any covariates, they will be assumed to be zero by support function
   if(!all(c(sapply(mdl$covnm, function(cnm) cnm %in% colnames(fixed_cov)), sapply(mdl$covnm, function(cnm) cnm %in% colnames(fixed_cov))))) {
     print("Not all model covariates appear in factual/counterfactual covariates: missing covariates will be assumed to be zero throughout")
   }
