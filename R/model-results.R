@@ -147,7 +147,8 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
 
   # remove any extraneous variables from covariate tables
   cov_f <- cov_f[,mdl$covnm, drop = F]
-  cov_cf <- cov_cf[,mdl$covnm, drop = F]
+  cov_hist <- cov_hist[,mdl$covnm, drop = F]
+  cov_fut <- cov_fut[,mdl$covnm, drop = F]
 
   # trim factual covariates if necessary
   if(nrow(cov_f) > 1) {
