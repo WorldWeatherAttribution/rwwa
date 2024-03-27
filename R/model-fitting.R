@@ -2,7 +2,7 @@
 #
 # Methods to estimate the parameters of a nonstationary GEV or normal distribution using max-likelihood estimation
 #
-#' Support function to calculate the log-likelihood of a vector of data 'x' for a nonstationary distribution defined by the parameters 'pars' (used to by 'fit_ns' to estimate the model parameters)
+#' Support function to calculate the log-likelihood of a vector of data 'x' for a nonstationary distribution defined by the parameters 'pars' (used by 'fit_ns' to estimate the model parameters)
 #'
 #' @param pars Vector of named parameters of the nonstationary model
 #' @param cov Data.frame containing values of the covariate(s) at which the location is to be evaluated

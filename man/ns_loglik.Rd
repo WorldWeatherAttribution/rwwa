@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-fitting.R
 \name{ns_loglik}
 \alias{ns_loglik}
-\title{Support function to calculate the log-likelihood of a vector of data 'x' for a nonstationary distribution defined by the parameters 'pars' (used to by 'fit_ns' to estimate the model parameters)}
+\title{Support function to calculate the log-likelihood of a vector of data 'x' for a nonstationary distribution defined by the parameters 'pars' (used by 'fit_ns' to estimate the model parameters)}
 \usage{
 ns_loglik(pars, cov, x, dist, fittype)
 }
@@ -21,6 +21,6 @@ ns_loglik(pars, cov, x, dist, fittype)
 Scalar log-likelihood
 }
 \description{
-Support function to calculate the log-likelihood of a vector of data 'x' for a nonstationary distribution defined by the parameters 'pars' (used to by 'fit_ns' to estimate the model parameters)
+Support function to calculate the log-likelihood of a vector of data 'x' for a nonstationary distribution defined by the parameters 'pars' (used by 'fit_ns' to estimate the model parameters)
 }
 \keyword{internal}
