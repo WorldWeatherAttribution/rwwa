@@ -14,8 +14,8 @@
 #'
 getsynmean <- function(data, sig_mod = 0) {
 
-  # calculate weight for each model (based on width of confidence interval, so adding 2*1.96\sigma_{mrep} in quadrature)
-  w = 1/((data$upper - data$lower)^2 + (2*1.96*sig_mod)^2)
+  # calculate weight for each model based on inverse variance
+  w = 1/(((data$upper - data$lower)/(2*1.96))^2 + sig_mod^2)
   w1 = sum(w)
 
   # weighted sum of squares & bounds
