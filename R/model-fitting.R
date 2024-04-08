@@ -72,12 +72,11 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev =
   }
 
   # if looking at lower tail with a GEV, necessary to negate data and consider block maxima - add flag to keep track
+  minima <- F
   if (lower & (dist %in% c("gev"))) {
       x <- -x
       minima <- T
-    } else {
-      minima <- F
-    }
+  }
 
   # fit model with appropriate number of parameters, pad if necessary
   init <- c("mu0" = mean(x), "sigma0" = sd(x), setNames(rep(0,k), paste0("alpha_", covnm)))
