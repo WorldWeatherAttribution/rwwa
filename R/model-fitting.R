@@ -73,7 +73,7 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev =
 
   # if looking at lower tail with a GEV, necessary to negate data and consider block maxima - add flag to keep track
   if (lower & (dist %in% c("gev"))) {
-    if(minima) x <- -x
+      x <- -x
       minima <- T
     } else {
       minima <- F
