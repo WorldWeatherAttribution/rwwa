@@ -11,6 +11,7 @@ plot_trend(
   ylab = NA,
   legend_pos = "topleft",
   main = "",
+  xlim = NA,
   ylim = NA,
   lwd = 2
 )
@@ -28,7 +29,9 @@ plot_trend(
 
 \item{main}{String: main title for plot. Default is to leave blank.}
 
-\item{ylim}{(Optional) vector defining the lower and upper limits of the y axes}
+\item{xlim}{(Optional) vector defining the limits of the x axis}
+
+\item{ylim}{(Optional) vector defining the lower and upper limits of the y axis}
 
 \item{lwd}{Scalar: line weight to be used in plotting}
 }

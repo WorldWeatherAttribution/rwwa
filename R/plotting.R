@@ -8,15 +8,17 @@
 #' @param ylab (Optional) string: label for y axis
 #' @param legend_pos String indicating location of legend: default is 'topleft'. Change to NA to remove legend.
 #' @param main String: main title for plot. Default is to leave blank.
-#' @param ylim (Optional) vector defining the lower and upper limits of the y axes
+#' @param xlim (Optional) vector defining the limits of the x axis
+#' @param ylim (Optional) vector defining the lower and upper limits of the y axis
 #' @param lwd Scalar: line weight to be used in plotting
 #'
 #' @export
 #'
-plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main = "", ylim = NA, lwd = 2) {
+plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
-  if(is.na(ylim[1])) { ylim <- range(pretty(mdl$x)) }
+  if(is.na(unlist(xlim)[1])) { xlim <- range(pretty(mdl$data$year)) }
+  if(is.na(unlist(ylim)[1])) { ylim <- range(pretty(mdl$x)) }
   if(missing(ev)) { ev <- mdl$ev }
   if(missing(ev_year)) { ev_year <- mdl$data$year[which.min(abs(mdl$x - ev))] }
 
@@ -42,6 +44,7 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
 #' @param plot_cov Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case nonstationary parameters are returned for all values of the covariate(s) used to fit the model
 #' @param ci_cov (Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
+#' @param ev_x (Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
 #' @param ylim (Optional) vector defining the lower and upper limits of the y axes
@@ -53,7 +56,7 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, nsamp = 500,
+plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x = NA, seed = 42, nsamp = 500,
                           ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
@@ -62,8 +65,9 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, 
   if(missing(ev)) { ev <- mdl$ev }
 
   x <- mdl$cov[,xcov]
+  if(missing(ev))    { ev <- mdl$ev }
+  if(is.na(ev_x)) {ev_x <- x[which(mdl$x == ev)]}
   o <- order(x)
-  y <- x[which(mdl$x == ev)]
 
   if(is.na(unlist(ci_cov)[1])) {
     # can't plot confidence intervals so set nsamp to NA
@@ -75,6 +79,8 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, 
 
   if(is.na(unlist(plot_cov)[1])) {
     # if no plotting covariate provided, fix all covariates at mean value except for xcov
+    plot_cov <- data.frame(mdl$cov[,xcov, drop = F], unname(apply(mdl$cov[,-which(mdl$covnm == xcov),drop = F],2,mean)))
+    colnames(plot_cov) <- mdl$covnm
   }
 
   plot(x, mdl$x, pch = 20, main = main, xlab = "", ylab = "", ylim = ylim, xlim = xlims,
@@ -82,7 +88,7 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, 
   mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
   mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
 
-  points(y, ev, col = "magenta", lwd = 2, pch = 0)
+  points(ev_x, ev, col = "magenta", lwd = 2, pch = 0)
 
   # trend lines
   lines(x[o], ns_pars(mdl, fixed_cov = plot_cov)$loc[o], lwd = 3, col = "black", lty = 1)

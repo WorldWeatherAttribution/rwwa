@@ -10,6 +10,7 @@ plot_covtrend(
   plot_cov = NA,
   ci_cov = NA,
   ev,
+  ev_x = NA,
   seed = 42,
   nsamp = 500,
   ylim = NA,
@@ -30,6 +31,8 @@ plot_covtrend(
 \item{ci_cov}{(Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.}
 
 \item{ev}{(Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model}
+
+\item{ev_x}{(Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model}
 
 \item{seed}{Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)}
 
