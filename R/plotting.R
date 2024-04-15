@@ -73,10 +73,14 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, 
     xlims <- range(pretty(c(ci_cov[,xcov], x)))
   }
 
+  if(is.na(unlist(plot_cov)[1])) {
+    # if no plotting covariate provided, fix all covariates at mean value except for xcov
+  }
+
   plot(x, mdl$x, pch = 20, main = main, xlab = "", ylab = "", ylim = ylim, xlim = xlims,
        col = adjustcolor("black", 0.6))
-  mtext(xlab, side = 1, line = 2.5, cex = par("cex"))
-  mtext(ylab, side = 2, line = 2.5, cex = par("cex"))
+  mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
+  mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
 
   points(y, ev, col = "magenta", lwd = 2, pch = 0)
 
@@ -104,7 +108,8 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, 
   }
 
   # add legend
-  legend(legend_pos, legend = c("location", "1-in-6-year event", "1-in-40-year event"), lty = 1, col = c("black", "blue", "blue"), lwd = c(2,2,1))
+  legend(legend_pos, legend = c("location", "1-in-6-year event", "1-in-40-year event"), lty = 1, col = c("black", "blue", "blue"),
+         lwd = c(2,2,1), cex = par()$cex.lab)
 }
 
 
@@ -168,10 +173,11 @@ plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500,
 
   # plot
   plot(0,type = "n", xlim = xlim, ylim = ylim, log = "x", xlab = "", ylab = "", main = main)
-  mtext("Return period (years)", side = 1, line = 2.5, cex = par("cex"))
-  mtext(ylab, side = 2, line = 2.5, cex = par("cex"))
+  mtext("Return period (years)", side = 1, line = 2.5, cex = par("cex.lab"))
+  mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
 
-  legend(legend_pos, legend = c(legend_labels, "Observed event"), col = c("firebrick", "blue", "magenta"), lty = 1, pch = c(pch,pch,NA), bty = "n")
+  legend(legend_pos, legend = c(legend_labels, "Observed event"), col = c("firebrick", "blue", "magenta"), lty = 1, pch = c(pch,pch,NA),
+         bty = "n", cex = par()$cex.lab)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
