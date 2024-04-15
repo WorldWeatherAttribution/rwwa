@@ -97,14 +97,14 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, seed = 42, 
       boot_df <- mdl_df[sample(1:nrow(mdl_df), nrow(mdl_df), replace = T),]
       tryCatch({
         boot_mdl <- refit(mdl, boot_df)
-        sapply(rownames(ci_cov), function(rnm) ns_pars(boot_mdl, ci_cov[rnm,])$loc)
+        sapply(rownames(ci_cov), function(rnm) ns_pars(boot_mdl, ci_cov[rnm,,drop = F])$loc)
       }, error = function(cond) {return(rep(NA, nrow(ci_cov)))})
     }), 1, quantile, c(0.025, 0.975), na.rm = T)
 
     # confidence interval & markers for mu' at factual & counterfactual covariates
     segments(x0 = ci_cov[,xcov], y0 = mu_ci["2.5%",], y1 = mu_ci["97.5%",], lwd = 3, col = "red3", lend = 1)
     # matplot(ci_cov[,"gmst"], t(mu_ci), pch = 3, add = T, col = "red3") # line ends: not very elegant, so removed for now
-    points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,])$loc), pch = "_", col = "red3", lwd = 2)
+    points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,,drop = F])$loc), pch = "_", col = "red3", lwd = 2)
   }
 
   # add legend
