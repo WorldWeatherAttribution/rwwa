@@ -47,7 +47,7 @@ load_ts <- function(fnm, ...) {
 panel.cor <- function(x, y, digits = 2, ...) {
   usr <- par("usr")
   par(usr = c(0, 1, 0, 1))
-  r <- cor(x, y)
+  r <- cor(x, y, use = "pairwise.complete.obs")
   txt <- round(r, digits)
   cex.cor <- 1
   text(0.5, 0.5, txt, font = 2, ...)
