@@ -79,7 +79,7 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x = NA, 
 
   if(is.na(unlist(plot_cov)[1])) {
     # if no plotting covariate provided, fix all covariates at mean value except for xcov
-    plot_cov <- data.frame(sapply(mdl$covnm, function(cnm) if(cnm == xcov) {df[,xcov]} else {mean(df[,cnm])}, simplify = F))
+    plot_cov <- data.frame(sapply(mdl$covnm, function(cnm) if(cnm == xcov) {mdl$data[,xcov]} else {mean(mdl$data[,cnm])}, simplify = F))
   }
 
   plot(x, mdl$x, pch = 20, main = main, xlab = "", ylab = "", ylim = ylim, xlim = xlims,
