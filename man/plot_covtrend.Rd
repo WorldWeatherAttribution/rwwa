@@ -10,7 +10,7 @@ plot_covtrend(
   plot_cov = NA,
   ci_cov = NA,
   ev,
-  ev_x = NA,
+  ev_x,
   seed = 42,
   nsamp = 500,
   ylim = NA,

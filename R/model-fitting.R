@@ -58,7 +58,7 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
 #'
 #' @export
 #'
-fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev = NA, method = "BFGS") {
+fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev = NA, ev_year = NA, method = "BFGS") {
 
   # remove extraneous
   cov <- data[, covnm, drop = F]
@@ -104,10 +104,15 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev =
   fitted[["cov"]] <- cov
 
   fitted[["lower"]] <- lower               # saves having to specify every time later on
-  fitted[["minima"]] <- minima         # look at maxima of 0-temps, rather than minima of observed temps
+  fitted[["minima"]] <- minima             # look at maxima of 0-temps, rather than minima of observed temps
 
-  if(is.na(ev)) { ev <- x[length(x)] } # event value: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
+  # event value: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
+  if(is.na(ev)) { ev <- x[length(x)] }
   fitted[["ev"]] <- ev
+
+  # event year: find year with closest event value, unless told otherwise (used in later plotting functions)
+  if(is.na(ev_year)) { ev_year <- data$year[which.min(abs(mdl$x - ev))] }
+  fitted[["ev_year"]] <- ev_year
 
   return(fitted)
 }

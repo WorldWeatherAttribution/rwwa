@@ -56,7 +56,7 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x = NA, seed = 42, nsamp = 500,
+plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed = 42, nsamp = 500,
                           ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
@@ -66,7 +66,7 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x = NA, 
 
   x <- mdl$cov[,xcov]
   if(missing(ev))    { ev <- mdl$ev }
-  if(is.na(ev_x)) {ev_x <- x[which(mdl$x == ev)]}
+  if(missing(ev_x)) {ev_x <- x[which(mdl$x == ev)]}
   o <- order(x)
 
   if(is.na(unlist(ci_cov)[1])) {

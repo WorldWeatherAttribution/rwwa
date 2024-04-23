@@ -12,6 +12,7 @@ fit_ns(
   covnm,
   lower = F,
   ev = NA,
+  ev_year = NA,
   method = "BFGS"
 )
 }
