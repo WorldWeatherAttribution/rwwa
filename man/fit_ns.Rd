@@ -11,8 +11,8 @@ fit_ns(
   varnm,
   covnm,
   lower = F,
-  ev = NA,
   ev_year = NA,
+  ev = NA,
   method = "BFGS"
 )
 }
@@ -29,7 +29,9 @@ fit_ns(
 
 \item{lower}{Boolean indicating whether to evaluate the lower tail of the data or not: default is F (evaluate the upper tail).}
 
-\item{ev}{(optional) Scalar specifying the magnitude of the event of interest for later reference; default is to use the value from the last row of 'data'}
+\item{ev_year}{(optional) Scalar specifying the year of the event of interest; default is to use the value from the last row of 'data'}
+
+\item{ev}{(optional) Scalar specifying the magnitude of the event of interest; default is to use the value corresponding to 'ev_year'}
 
 \item{method}{String defining the method to be used by 'optim' to maximise the log-likelihood: default is 'BFGS'}
 }

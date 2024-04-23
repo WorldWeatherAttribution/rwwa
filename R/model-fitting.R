@@ -49,7 +49,8 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
 #' @param varnm String identifying the dependent variable (must be a column name in 'data')
 #' @param covnm String or vector of strings identifying the predictors (must be column names in 'data')
 #' @param lower Boolean indicating whether to evaluate the lower tail of the data or not: default is F (evaluate the upper tail).
-#' @param ev (optional) Scalar specifying the magnitude of the event of interest for later reference; default is to use the value from the last row of 'data'
+#' @param ev_year (optional) Scalar specifying the year of the event of interest; default is to use the value from the last row of 'data'
+#' @param ev (optional) Scalar specifying the magnitude of the event of interest; default is to use the value corresponding to 'ev_year'
 #' @param method String defining the method to be used by 'optim' to maximise the log-likelihood: default is 'BFGS'
 #'
 #' @return List of attributes & parameters defining a nonstationary model
@@ -58,7 +59,7 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
 #'
 #' @export
 #'
-fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev = NA, ev_year = NA, method = "BFGS") {
+fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev_year = NA, ev = NA, method = "BFGS") {
 
   # remove extraneous
   cov <- data[, covnm, drop = F]
@@ -106,13 +107,20 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev =
   fitted[["lower"]] <- lower               # saves having to specify every time later on
   fitted[["minima"]] <- minima             # look at maxima of 0-temps, rather than minima of observed temps
 
-  # event value: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
-  if(is.na(ev)) { ev <- x[length(x)] }
-  fitted[["ev"]] <- ev
-
-  # event year: find year with closest event value, unless told otherwise (used in later plotting functions)
-  if(is.na(ev_year)) { ev_year <- data$year[which.min(abs(mdl$x - ev))] }
+  # event year: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
+  if(is.na(ev_year)) { ev_year <- data$year[length(x)] }
   fitted[["ev_year"]] <- ev_year
+
+  # event value: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
+  if(is.na(ev)) {
+    if(ev_year %in% data$year) {
+        ev <- data[data$year == ev_year,varnm]
+      } else {
+        print("WARNING: Event year not in data, no event value recorded")
+        ev <- NA
+      }
+    }
+  fitted[["ev"]] <- ev
 
   return(fitted)
 }
