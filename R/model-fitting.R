@@ -117,7 +117,7 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev_y
         ev <- data[data$year == ev_year,varnm]
       } else {
         print("WARNING: Event year not in data, no event value recorded")
-        ev <- NA
+        ev <- -999
       }
     }
   fitted[["ev"]] <- ev
