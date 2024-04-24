@@ -55,7 +55,7 @@ get.ns_pars <- function(fittype, pars, fixed_cov) {
     scale = pars["sigma0"] * effect_b
 
   } else {
-    print(fittype, "not implemented")
+    cat(fittype, "not implemented")
     return()
   }
 
