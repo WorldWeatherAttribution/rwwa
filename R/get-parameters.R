@@ -34,8 +34,9 @@ get.ns_pars <- function(fittype, pars, fixed_cov) {
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # calculate effect of all alpha parameters
+  # calculate effect of all alpha & beta parameters
   effect_a <- rowSums(matrix(sapply(names(fixed_cov), function(cnm) pars[paste0("alpha_",cnm)] * fixed_cov[,cnm]), nrow = nrow(fixed_cov)))
+  effect_b <- rowSums(matrix(sapply(names(fixed_cov), function(cnm) pars[paste0("beta_",cnm)] * fixed_cov[,cnm]), nrow = nrow(fixed_cov)))
 
   if(fittype == "fixeddisp") {
 
@@ -48,7 +49,12 @@ get.ns_pars <- function(fittype, pars, fixed_cov) {
     loc = pars["mu0"] + effect_a
     scale = rep(pars["sigma0"], length(loc))
 
-  } else {
+  } else if(fittype == "shiftscale") {
+
+    loc = pars["mu0"] + effect_a
+    scale = pars["sigma0"] + effect_b
+
+  } else{
     print(fittype, "not implemented")
     return()
   }
