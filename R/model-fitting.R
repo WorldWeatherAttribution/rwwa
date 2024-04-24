@@ -84,6 +84,8 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev_y
   # fit model with appropriate number of parameters, pad if necessary
   init <- c("mu0" = mean(x), "sigma0" = sd(x), setNames(rep(0,k), paste0("alpha_", covnm)))
 
+  if(fittype %in% c("shiftscale")) init <- c(init, setNames(rep(1,k), paste0("beta_", covnm)))
+
   if(dist %in% c("gev")) init <- c(init, "shape" = 0)
   fitted <- suppressWarnings(optim(par = init, ns_loglik, cov = cov, x = x, dist = dist, fittype = type, method = method))
 
