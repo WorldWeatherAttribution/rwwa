@@ -130,7 +130,8 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed 
 #' @param xlim Vector defining the lower and upper limits of the x axes (default is c(1,10000))
 #' @param ylim (Optional) vector defining the lower and upper limits of the y axes
 #' @param pch Scalar determing the plotting character to be used. Default is 20.
-#' @param ylab (Optional) string: label for y axis. Default is to leave the covariate name.
+#' @param xlab (Optional) string: label for x axis. Default is "Return period (years)".
+#' @param ylab (Optional) string: label for y axis. Default is to use the covariate name.
 #' @param main String: main title for plot. Default is to leave blank.
 #' @param legend_pos String indicating location of legend: default is 'topleft'. Change to NA to remove legend.
 #' @param legend_labels Vector of labels for legend: default is c("Present climate", "Counterfactual climate").
@@ -138,7 +139,7 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed 
 #' @export
 #'
 plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500,
-                              xlim = c(1,10000), ylim = NA, pch = 20, ylab = NA, main = "",
+                              xlim = c(1,10000), ylim = NA, pch = 20, xlab = "Return period (years)", ylab = NA, main = "",
                               legend_pos = "topright", legend_labels = c("Present climate", "Counterfactual climate")) {
 
   x <- mdl$x
@@ -178,7 +179,7 @@ plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500,
 
   # plot
   plot(0,type = "n", xlim = xlim, ylim = ylim, log = "x", xlab = "", ylab = "", main = main)
-  mtext("Return period (years)", side = 1, line = 2.5, cex = par("cex.lab"))
+  mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
   mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
 
   legend(legend_pos, legend = c(legend_labels, "Observed event"), col = c("firebrick", "blue", "magenta"), lty = 1, pch = c(pch,pch,NA),

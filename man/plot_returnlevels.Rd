@@ -14,6 +14,7 @@ plot_returnlevels(
   xlim = c(1, 10000),
   ylim = NA,
   pch = 20,
+  xlab = "Return period (years)",
   ylab = NA,
   main = "",
   legend_pos = "topright",
@@ -39,7 +40,9 @@ plot_returnlevels(
 
 \item{pch}{Scalar determing the plotting character to be used. Default is 20.}
 
-\item{ylab}{(Optional) string: label for y axis. Default is to leave the covariate name.}
+\item{xlab}{(Optional) string: label for x axis. Default is "Return period (years)".}
+
+\item{ylab}{(Optional) string: label for y axis. Default is to use the covariate name.}
 
 \item{main}{String: main title for plot. Default is to leave blank.}
 
