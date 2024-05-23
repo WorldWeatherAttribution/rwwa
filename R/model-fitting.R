@@ -32,9 +32,7 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
   } else if(dist == "gev") {
     shape = pars["shape"]
     return(-sum(devd(x, loc = loc, scale = scale, shape = shape, log = T)))
-  } else if(dist == "poisson") {
-    return(-sum(dpois(x, lambda = loc, log = T)))
-  } else{
+  } else {
     print(paste(dist, "not implemented"))
     return()
   }

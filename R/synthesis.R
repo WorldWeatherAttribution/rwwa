@@ -228,7 +228,7 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
     if(log) {logaxs <- "x"} else {logaxs <- ""}
   }
 
-  if (class(synth) == "list") synth <- synth$df
+  if (is(synth, "list")) synth <- synth$df
 
   if (missing(xlim)) {
     if(logaxs == "x") {

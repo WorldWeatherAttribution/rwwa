@@ -7,3 +7,4 @@ importFrom("graphics", "abline", "axis", "legend", "lines", "matplot", "mtext",
                "par", "points", "polygon", "rug", "segments", "text")
 importFrom("utils", "read.csv")
 importFrom("plyr", "rbind.fill")
+importFrom("methods", "is")

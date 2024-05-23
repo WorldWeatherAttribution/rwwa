@@ -27,8 +27,14 @@ mdl_ests <- function(mdl, cov_f, cov_cf, ev, rp = NA) {
   current_pars <- ns_pars(mdl, fixed_cov = cov_f)
   disp <- current_pars$scale / current_pars$loc
 
-  if(missing(ev)) ev <- mdl$ev
-  if(is.na(rp)) rp <- return_period(mdl, ev, fixed_cov = cov_f)
+  if(is.na(rp)) {
+    # if no fixed RP is given, estimate it from the event value
+    if(missing(ev)) ev <- mdl$ev
+    rp <- return_period(mdl, ev, fixed_cov = cov_f)
+  } else {
+    # if fixed RP given, use it to bootstrap the expected magnitude of the event value
+    ev <- eff_return_level(mdl, rp, fixed_cov = cov_f)
+  }
 
   # loop over counterfactual covariates (if necessary) & get PRs and intensity changes
   if(nrow(cov_cf) == 1) {
@@ -126,7 +132,7 @@ boot_ci <- function(mdl, cov_f, cov_cf, ev, rp = NA, seed = 42, nsamp = 500, ci 
 #' @param rp Scalar: fixed return period of interest
 #' @param cov_f Data.frame with one row containing named covariates defining the factual climate
 #' @param cov_hist Data.frame with one or more rows containing named covariates defining the historic counterfactual climate
-#' @param cov_fut Data.frame with one or more rows containing named covariates defining the future counterfactual climate
+#' @param cov_fut (optional) Data.frame with one or more rows containing named covariates defining the future counterfactual climate
 #' @param y_start Integer: first year for which observations are available, used to determine the start of the evaluation period. Default is 1979.
 #' @param y_now Integer: last year for which observations are available, used to determine the start of the evaluation/attribution period. Default is to use the current year.
 #' @param y_fut Integer: last year to be used in the projection model. Default is 2050.
@@ -145,7 +151,6 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
                            nsamp = 5, seed = 42, ci = 0.95, return_sample = F, di_relative = NA) {
 
   alpha <- 1-ci
-
   set.seed(seed)
 
   # fill in missing parameters
@@ -154,7 +159,6 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
   # remove any extraneous variables from covariate tables
   cov_f <- cov_f[,mdl$covnm, drop = F]
   cov_hist <- cov_hist[,mdl$covnm, drop = F]
-  cov_fut <- cov_fut[,mdl$covnm, drop = F]
 
   # trim factual covariates if necessary
   if(nrow(cov_f) > 1) {
@@ -163,14 +167,13 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # update model for three different subsets: for evaluation, attribution & projection
+  # update model for evaluation & attribution
 
   df <- mdl$data
 
   # fit models to subsets of the data
   mdl_eval <- refit(mdl, new_data = df[df$year >= y_start & df$year <= y_now,])
   mdl_attr <- refit(mdl, new_data = df[df$year <= y_now,])
-  mdl_proj <- refit(mdl, new_data = df[df$year <= y_fut,])
 
   # get return level to use for analysis
   event_rl <- eff_return_level(mdl_attr, rp = rp, fixed_cov = cov_f)
@@ -186,21 +189,41 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
   ci_eval <- boot_ci(mdl_eval, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp)[key_par,,drop = F]
   ci_attr <- boot_ci(mdl_attr, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp)
   ci_attr <- ci_attr[grepl(paste0("PR|",di_cnm), rownames(ci_attr)),]
-  ci_proj <- boot_ci(mdl_proj, cov_f = cov_f, cov_cf = cov_fut, ev = event_rl, rp = rp, nsamp = nsamp)
-  ci_proj <- ci_proj[grepl(paste0("PR|",di_cnm), rownames(ci_proj)),]
-
-  # invert future projections
-  ci_proj[grepl("PR", rownames(ci_proj)),] <- 1/ci_proj[grepl("PR", rownames(ci_proj)),c(1,3,2)]
-  ci_proj[grepl(di_cnm, rownames(ci_proj)),] <- -ci_proj[grepl(di_cnm, rownames(ci_proj)), c(1,3,2)]
 
   # flatten & rename
   ci_eval <- unlist(lapply(rownames(ci_eval), function(cnm) setNames(ci_eval[cnm,], paste("eval", gsub("_", "-", cnm), c("est", "lower", "upper"), sep = "_"))))
   ci_attr <- unlist(lapply(rownames(ci_attr), function(cnm) setNames(ci_attr[cnm,], paste("attr", gsub("_", "-", cnm), c("est", "lower", "upper"), sep = "_"))))
-  ci_proj <- unlist(lapply(rownames(ci_proj), function(cnm) setNames(ci_proj[cnm,], paste("proj", gsub("_", "-", cnm), c("est", "lower", "upper"), sep = "_"))))
+
+  # compile results so far
+  res <- c(ci_eval, "rp_value" = event_rl, ci_attr)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # bootstrap model results (if future covariates given)
+  if(!missing(cov_fut)) {
+
+    # drop any extraneous covariates
+    cov_fut <- cov_fut[,mdl$covnm, drop = F]
+
+    # refit the model
+    mdl_proj <- refit(mdl, new_data = df[df$year <= y_fut,])
+
+    # bootstrap results
+    ci_proj <- boot_ci(mdl_proj, cov_f = cov_f, cov_cf = cov_fut, ev = event_rl, rp = rp, nsamp = nsamp)
+    ci_proj <- ci_proj[grepl(paste0("PR|",di_cnm), rownames(ci_proj)),]
+
+    # invert future projections
+    ci_proj[grepl("PR", rownames(ci_proj)),] <- 1/ci_proj[grepl("PR", rownames(ci_proj)),c(1,3,2)]
+    ci_proj[grepl(di_cnm, rownames(ci_proj)),] <- -ci_proj[grepl(di_cnm, rownames(ci_proj)), c(1,3,2)]
+
+    ci_proj <- unlist(lapply(rownames(ci_proj), function(cnm) setNames(ci_proj[cnm,], paste("proj", gsub("_", "-", cnm), c("est", "lower", "upper"), sep = "_"))))
+
+    res <- c(res, ci_proj)
+  }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  res <- t(data.frame(c(ci_eval, "rp_value" = event_rl, ci_attr, ci_proj)))
+  # reshape & relabel results
+  res <- t(data.frame(res))
   rownames(res) <- paste0(mdl$varnm, " ~ ", paste(mdl$covnm, collapse = " + "), " (rp", rp,")")
   return(res)
 }

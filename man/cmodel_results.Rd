@@ -29,7 +29,7 @@ cmodel_results(
 
 \item{cov_hist}{Data.frame with one or more rows containing named covariates defining the historic counterfactual climate}
 
-\item{cov_fut}{Data.frame with one or more rows containing named covariates defining the future counterfactual climate}
+\item{cov_fut}{(optional) Data.frame with one or more rows containing named covariates defining the future counterfactual climate}
 
 \item{y_start}{Integer: first year for which observations are available, used to determine the start of the evaluation period. Default is 1979.}
 
