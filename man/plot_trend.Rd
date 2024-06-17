@@ -9,6 +9,8 @@ plot_trend(
   ev,
   ev_year,
   rp = c(6, 40),
+  add_loess = F,
+  loess_col = "forestgreen",
   ylab = NA,
   legend_pos = "topleft",
   main = "",
@@ -26,7 +28,11 @@ plot_trend(
 
 \item{rp}{(Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)}
 
-\item{ylab}{(Optional) string: label for y axis}
+\item{add_loess}{Boolean: add a Loess smoother to the plot? Default is F.}
+
+\item{loess_col}{String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.}
+
+\item{ylab}{(Optional) string: label for y axis: default is to use variable name}
 
 \item{legend_pos}{String indicating location of legend: default is 'topleft'. Change to NA to remove legend.}
 

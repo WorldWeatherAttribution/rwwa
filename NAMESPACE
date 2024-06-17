@@ -1,6 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 
-importFrom("stats", "setNames", "dnorm", "qnorm", "pnorm", "optim", "sd", "quantile", "cor")
+importFrom("stats", "setNames", "dnorm", "qnorm", "pnorm", "optim", "sd", "quantile", "cor", "fitted", "formula", "loess")
 importFrom("extRemes", "devd", "qevd", "pevd")
 importFrom("grDevices", "adjustcolor")
 importFrom("graphics", "abline", "axis", "legend", "lines", "matplot", "mtext",

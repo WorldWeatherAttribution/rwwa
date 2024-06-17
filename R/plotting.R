@@ -6,7 +6,9 @@
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_year (Optional) scalar: year of the event of interest. If not provided, inferred from the fitted model
 #' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
-#' @param ylab (Optional) string: label for y axis
+#' @param add_loess Boolean: add a Loess smoother to the plot? Default is F.
+#' @param loess_col String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.
+#' @param ylab (Optional) string: label for y axis: default is to use variable name
 #' @param legend_pos String indicating location of legend: default is 'topleft'. Change to NA to remove legend.
 #' @param main String: main title for plot. Default is to leave blank.
 #' @param xlim (Optional) vector defining the limits of the x axis
@@ -15,7 +17,8 @@
 #'
 #' @export
 #'
-plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
+plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col = "forestgreen",
+                       ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
   if(is.na(unlist(xlim)[1])) { xlim <- range(mdl$data$year) }
@@ -42,6 +45,15 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), ylab = NA, legend_pos = 
   lines(mdl$data$year-0.5, ns_pars(mdl)$loc, col = adjustcolor("black", 1), lwd = lwd)
   lines(mdl$data$year-0.5, eff_return_level(mdl, rp[1]), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
   lines(mdl$data$year-0.5, eff_return_level(mdl, rp[2]), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = max(1,lwd -1))
+
+  # add a loess smoother
+  if(add_loess) {
+    lines(mdl$data$year, fitted(loess(formula(paste0(mdl$varnm," ~ year")), mdl$data)), col = loess_col, lwd = lwd, lty = "22")
+    legend_labels <- c(legend_labels, "Loess smoothed")
+    legend_cols <- c(legend_cols, loess_col)
+    legend_lty <- c(legend_lty, "22")
+    legend_lwd <- c(legend_lwd, lwd)
+  }
 
   points(ev_year-0.5, ev, col = "magenta", lwd = 2, pch = 0)
 
