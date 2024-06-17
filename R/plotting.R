@@ -8,6 +8,7 @@
 #' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
 #' @param add_loess Boolean: add a Loess smoother to the plot? Default is F.
 #' @param loess_col String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.
+#' @param xlab (Optional) string: label for x axis: default is 'Year'
 #' @param ylab (Optional) string: label for y axis: default is to use variable name
 #' @param legend_pos String indicating location of legend: default is 'topleft'. Change to NA to remove legend.
 #' @param main String: main title for plot. Default is to leave blank.
@@ -18,7 +19,7 @@
 #' @export
 #'
 plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col = "forestgreen",
-                       ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
+                       xlab = "Year", ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
   if(is.na(unlist(xlim)[1])) { xlim <- range(mdl$data$year) }
@@ -39,7 +40,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
     legend_lwd = c(legend_lwd,c(lwd,max(1,lwd -1))[1:length(rp)])
   }
 
-  plot(mdl$data$year, mdl$x, type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = "Year",
+  plot(mdl$data$year, mdl$x, type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = xlab,
        ylab = ylab, main = main, xlim = xlim, ylim = ylim)
 
   lines(mdl$data$year-0.5, ns_pars(mdl)$loc, col = adjustcolor("black", 1), lwd = lwd)

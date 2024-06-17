@@ -11,6 +11,7 @@ plot_trend(
   rp = c(6, 40),
   add_loess = F,
   loess_col = "forestgreen",
+  xlab = "Year",
   ylab = NA,
   legend_pos = "topleft",
   main = "",
@@ -31,6 +32,8 @@ plot_trend(
 \item{add_loess}{Boolean: add a Loess smoother to the plot? Default is F.}
 
 \item{loess_col}{String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.}
+
+\item{xlab}{(Optional) string: label for x axis: default is 'Year'}
 
 \item{ylab}{(Optional) string: label for y axis: default is to use variable name}
 
