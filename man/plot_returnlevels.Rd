@@ -11,6 +11,7 @@ plot_returnlevels(
   ev,
   seed = 42,
   nsamp = 500,
+  model_desc = T,
   xlim = c(1, 10000),
   ylim = NA,
   pch = 20,
@@ -33,6 +34,8 @@ plot_returnlevels(
 \item{seed}{Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)}
 
 \item{nsamp}{Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.}
+
+\item{model_desc}{Boolean: add description of model to plot? Default is T.}
 
 \item{xlim}{Vector defining the lower and upper limits of the x axes (default is c(1,10000))}
 

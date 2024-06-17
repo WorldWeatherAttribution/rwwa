@@ -183,6 +183,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA, ev, ev_x, rp =
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
+#' @param model_desc Boolean: add description of model to plot? Default is T.
 #' @param xlim Vector defining the lower and upper limits of the x axes (default is c(1,10000))
 #' @param ylim (Optional) vector defining the lower and upper limits of the y axes
 #' @param pch Scalar determing the plotting character to be used. Default is 20.
@@ -194,7 +195,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA, ev, ev_x, rp =
 #'
 #' @export
 #'
-plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500,
+plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500, model_desc = T,
                               xlim = c(1,10000), ylim = NA, pch = 20, xlab = "Return period (years)", ylab = NA, main = "",
                               legend_pos = "topright", legend_labels = c("Present climate", "Counterfactual climate")) {
 
@@ -238,8 +239,16 @@ plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500,
   mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
   mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
 
+  # if model description is required, add it as legend title
+  if(model_desc) {
+    legend_title <- paste0(mdl$varnm, " ~ ", paste0(mdl$covnm, collapse = " + "), " (",mdl$dist, ", ", mdl$type, ")")
+  } else {
+    legend_title <- ""
+  }
+
+  # add legend
   legend(legend_pos, legend = c(legend_labels, "Observed event"), col = c("firebrick", "blue", "magenta"), lty = 1, pch = c(pch,pch,NA),
-         bty = "n", cex = par()$cex.lab)
+         bty = "n", cex = par()$cex.lab, title = legend_title)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
