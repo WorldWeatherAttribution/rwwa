@@ -75,6 +75,8 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_x (Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model
 #' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
+#' @param add_loess Boolean: add a Loess smoother to the plot? Default is F.
+#' @param loess_col String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
 #' @param ylim (Optional) vector defining the lower and upper limits of the y axes
@@ -86,8 +88,8 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, rp = c(6,40), seed = 42, nsamp = 500,
-                          ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
+plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, rp = c(6,40), add_loess = F, loess_col = "forestgreen",
+                          seed = 42, nsamp = 500, ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
   if(is.na(ylab)) { ylab <- mdl$varnm}
@@ -155,6 +157,16 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, rp = 
     segments(x0 = ci_cov[,xcov], y0 = mu_ci["2.5%",], y1 = mu_ci["97.5%",], lwd = 3, col = "red3", lend = 1)
     # matplot(ci_cov[,"gmst"], t(mu_ci), pch = 3, add = T, col = "red3") # line ends: not very elegant, so removed for now
     points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,,drop = F])$loc), pch = "_", col = "red3", lwd = 2)
+  }
+
+  # add a loess smoother
+  if(add_loess) {
+    dfx <- mdl$data[order(mdl$data[,xcov]),]
+    lines(dfx[,xcov], fitted(loess(formula(paste0(mdl$varnm," ~ ", xcov)), dfx)), col = loess_col, lwd = lwd, lty = "22")
+    legend_labels <- c(legend_labels, "Loess smoothed")
+    legend_cols <- c(legend_cols, loess_col)
+    legend_lty <- c(legend_lty, "22")
+    legend_lwd <- c(legend_lwd, lwd)
   }
 
   # add legend

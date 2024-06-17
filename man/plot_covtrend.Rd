@@ -12,6 +12,8 @@ plot_covtrend(
   ev,
   ev_x,
   rp = c(6, 40),
+  add_loess = F,
+  loess_col = "forestgreen",
   seed = 42,
   nsamp = 500,
   ylim = NA,
@@ -36,6 +38,10 @@ plot_covtrend(
 \item{ev_x}{(Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model}
 
 \item{rp}{(Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)}
+
+\item{add_loess}{Boolean: add a Loess smoother to the plot? Default is F.}
+
+\item{loess_col}{String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.}
 
 \item{seed}{Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)}
 
