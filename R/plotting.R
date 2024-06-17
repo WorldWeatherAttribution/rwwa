@@ -17,13 +17,13 @@
 plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
-  if(is.na(unlist(xlim)[1])) { xlim <- range(pretty(mdl$data$year)) }
+  if(is.na(unlist(xlim)[1])) { xlim <- range(mdl$data$year) }
   if(is.na(unlist(ylim)[1])) { ylim <- range(pretty(mdl$x)) }
   if(missing(ev)) { ev <- mdl$ev }
   if(missing(ev_year)) { ev_year <- mdl$data$year[which.min(abs(mdl$x - ev))] }
 
   plot(mdl$data$year, mdl$x, type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = "Year",
-       ylab = ylab, main = main, ylim = ylim)
+       ylab = ylab, main = main, xlim = xlim, ylim = ylim)
 
   lines(mdl$data$year-0.5, ns_pars(mdl)$loc, col = adjustcolor("black", 1), lwd = lwd)
   lines(mdl$data$year-0.5, eff_return_level(mdl, 6), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
