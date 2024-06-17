@@ -27,11 +27,13 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
   if(missing(ev)) { ev <- mdl$ev }
   if(missing(ev_year)) { ev_year <- mdl$data$year[which.min(abs(mdl$x - ev))] }
 
+  # set up legend
   legend_labels = "location"
   legend_cols = "black"
   legend_lty = "solid"
   legend_lwd = lwd
 
+  # modify legend if adding effective return levels
   rp <- unique(rp[!is.na(rp)])
   if(length(rp) > 0) {
     legend_labels = c(legend_labels, paste0("1-in-",rp,"-year event"))
@@ -72,6 +74,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #' @param ci_cov (Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_x (Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model
+#' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
 #' @param ylim (Optional) vector defining the lower and upper limits of the y axes
@@ -83,7 +86,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed = 42, nsamp = 500,
+plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, rp = c(6,40), seed = 42, nsamp = 500,
                           ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
@@ -109,6 +112,21 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed 
     plot_cov <- data.frame(sapply(mdl$covnm, function(cnm) if(cnm == xcov) {mdl$data[,xcov]} else {mean(mdl$data[,cnm])}, simplify = F))
   }
 
+  # set up legend
+  legend_labels = "location"
+  legend_cols = "black"
+  legend_lty = "solid"
+  legend_lwd = lwd
+
+  # modify legend if adding effective return levels
+  rp <- unique(rp[!is.na(rp)])
+  if(length(rp) > 0) {
+    legend_labels = c(legend_labels, paste0("1-in-",rp,"-year event"))
+    legend_cols = c(legend_cols, rep("blue",length(rp)))
+    legend_lty = c(legend_lty, rep("solid",length(rp)))
+    legend_lwd = c(legend_lwd,c(lwd,max(1,lwd -1))[1:length(rp)])
+  }
+
   plot(x, mdl$x, pch = 20, main = main, xlab = "", ylab = "", ylim = ylim, xlim = xlims,
        col = adjustcolor("black", 0.6))
   mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
@@ -118,8 +136,8 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed 
 
   # trend lines
   lines(x[o], ns_pars(mdl, fixed_cov = plot_cov)$loc[o], lwd = 3, col = "black", lty = 1)
-  lines(x[o], eff_return_level(mdl, 6, fixed_cov = plot_cov)[o], col = "blue", lwd = 3, lty = 1)
-  lines(x[o], eff_return_level(mdl, 40, fixed_cov = plot_cov)[o], col = "blue", lwd = 2, lty = 1)
+  lines(x[o], eff_return_level(mdl, rp[1], fixed_cov = plot_cov)[o], col = "blue", lwd = 3, lty = 1)
+  lines(x[o], eff_return_level(mdl, rp[2], fixed_cov = plot_cov)[o], col = "blue", lwd = 2, lty = 1)
 
   # get confidence interval for mu' (if not required, set ci_cov to NA)
   if(!is.na(nsamp)) {
@@ -140,8 +158,7 @@ plot_covtrend <- function(mdl, xcov, plot_cov = NA, ci_cov = NA, ev, ev_x, seed 
   }
 
   # add legend
-  legend(legend_pos, legend = c("location", "1-in-6-year event", "1-in-40-year event"), lty = 1, col = c("black", "blue", "blue"),
-         lwd = c(2,2,1), cex = par()$cex.lab)
+  legend(legend_pos, legend = legend_labels, lty = legend_lty, col = legend_cols, lwd = legend_lwd, cex = par()$cex.lab)
 }
 
 

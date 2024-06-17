@@ -11,6 +11,7 @@ plot_covtrend(
   ci_cov = NA,
   ev,
   ev_x,
+  rp = c(6, 40),
   seed = 42,
   nsamp = 500,
   ylim = NA,
@@ -33,6 +34,8 @@ plot_covtrend(
 \item{ev}{(Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model}
 
 \item{ev_x}{(Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model}
+
+\item{rp}{(Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)}
 
 \item{seed}{Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)}
 
