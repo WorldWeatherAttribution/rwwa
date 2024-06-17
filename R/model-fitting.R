@@ -152,3 +152,27 @@ refit <- function(mdl, new_data) {
 #' @export
 #'
 aic <- function(mdl) 2 * length(mdl$par) + 2 * mdl$value
+
+
+################################################################################################################################
+#' Calculate R^2 and adjusted R^2 from model output
+#'
+#' @param mdl List of attributes & parameters defining a nonstationary model, as returned by 'fit_ns'
+#'
+#' @return Vector containing R^2 and adjusted R^2
+#'
+#' @export
+#'
+rsquared <- function(mdl) {
+
+  tss = sum((mdl$x - mean(mdl$x))^2)
+  rss = sum((ns_pars(mdl)$loc - mdl$x)^2)
+
+  n = length(mdl$x)
+  p = length(mdl$covnm)
+
+  rsquared = 1 - (rss / tss)
+  rsquared_adj = 1 - (1 - rsquared) * (n-1) / (n-p-1)
+
+  return(c(r2 = rsquared, r2.adj = rsquared_adj))
+}
