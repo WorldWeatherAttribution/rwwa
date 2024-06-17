@@ -7,7 +7,7 @@
 plot_covtrend(
   mdl,
   xcov,
-  plot_cov = NA,
+  trend_cov = NA,
   ci_cov = NA,
   ev,
   ev_x,
@@ -29,7 +29,7 @@ plot_covtrend(
 
 \item{xcov}{String indicating the covariate to plot on the x-axis. Must appear in mdl$cov.}
 
-\item{plot_cov}{Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case nonstationary parameters are returned for all values of the covariate(s) used to fit the model}
+\item{trend_cov}{Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case the trend is estimated at all values of xcov with all other covariates held at their mean value}
 
 \item{ci_cov}{(Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.}
 
