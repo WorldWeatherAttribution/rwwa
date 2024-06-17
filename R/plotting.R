@@ -5,6 +5,7 @@
 #' @param mdl List of attributes & parameters defining a nonstationary model, as returned by 'fit_ns'
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_year (Optional) scalar: year of the event of interest. If not provided, inferred from the fitted model
+#' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
 #' @param ylab (Optional) string: label for y axis
 #' @param legend_pos String indicating location of legend: default is 'topleft'. Change to NA to remove legend.
 #' @param main String: main title for plot. Default is to leave blank.
@@ -14,7 +15,7 @@
 #'
 #' @export
 #'
-plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
+plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
   if(is.na(unlist(xlim)[1])) { xlim <- range(mdl$data$year) }
@@ -22,17 +23,30 @@ plot_trend <- function(mdl, ev, ev_year, ylab = NA, legend_pos = "topleft", main
   if(missing(ev)) { ev <- mdl$ev }
   if(missing(ev_year)) { ev_year <- mdl$data$year[which.min(abs(mdl$x - ev))] }
 
+  legend_labels = "location"
+  legend_cols = "black"
+  legend_lty = "solid"
+  legend_lwd = lwd
+
+  rp <- unique(rp[!is.na(rp)])
+  if(length(rp) > 0) {
+    legend_labels = c(legend_labels, paste0("1-in-",rp,"-year event"))
+    legend_cols = c(legend_cols, rep("blue",length(rp)))
+    legend_lty = c(legend_lty, rep("solid",length(rp)))
+    legend_lwd = c(legend_lwd,c(lwd,max(1,lwd -1))[1:length(rp)])
+  }
+
   plot(mdl$data$year, mdl$x, type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = "Year",
        ylab = ylab, main = main, xlim = xlim, ylim = ylim)
 
   lines(mdl$data$year-0.5, ns_pars(mdl)$loc, col = adjustcolor("black", 1), lwd = lwd)
-  lines(mdl$data$year-0.5, eff_return_level(mdl, 6), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
-  lines(mdl$data$year-0.5, eff_return_level(mdl, 40), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = max(1,lwd -1))
+  lines(mdl$data$year-0.5, eff_return_level(mdl, rp[1]), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
+  lines(mdl$data$year-0.5, eff_return_level(mdl, rp[2]), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = max(1,lwd -1))
 
   points(ev_year-0.5, ev, col = "magenta", lwd = 2, pch = 0)
 
   # add legend
-  legend(legend_pos, legend = c("location", "1-in-6-year event", "1-in-40-year event"), lty = 1, col = c("black", "blue", "blue"), lwd = c(lwd,lwd,max(1,lwd -1)))
+  legend(legend_pos, legend = legend_labels, lty = legend_lty, col = legend_cols, lwd = legend_lwd)
 }
 
 

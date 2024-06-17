@@ -8,6 +8,7 @@ plot_trend(
   mdl,
   ev,
   ev_year,
+  rp = c(6, 40),
   ylab = NA,
   legend_pos = "topleft",
   main = "",
@@ -22,6 +23,8 @@ plot_trend(
 \item{ev}{(Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model}
 
 \item{ev_year}{(Optional) scalar: year of the event of interest. If not provided, inferred from the fitted model}
+
+\item{rp}{(Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)}
 
 \item{ylab}{(Optional) string: label for y axis}
 
