@@ -11,7 +11,8 @@ plot_synthesis(
   xlab = "",
   main = "",
   add_space = T,
-  log = NA
+  log = NA,
+  hide_labels = F
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ plot_synthesis(
 \item{add_space}{Boolean: add a blank row between the observations, models and overall synthesis? Default is T.}
 
 \item{log}{Boolean (optional unless using output from Climate Explorer): should x axis be plotted on a log scale? Default is NA, with value determined by the type of synthesis (PR = T, rel/abs = F).}
+
+\item{hide_labels}{Boolean: Hide the model names on the y axis? Default is F (show labels)}
 }
 \description{
 Plot synthesis of attribution results from observations and climate models

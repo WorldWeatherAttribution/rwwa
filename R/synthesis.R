@@ -206,10 +206,11 @@ synthesis <- function(obs_in = NA, models_in, synth_type = "abs") {
 #' @param main String: main title of plot. Default is an empty string.
 #' @param add_space Boolean: add a blank row between the observations, models and overall synthesis? Default is T.
 #' @param log Boolean (optional unless using output from Climate Explorer): should x axis be plotted on a log scale? Default is NA, with value determined by the type of synthesis (PR = T, rel/abs = F).
+#' @param hide_labels Boolean: Hide the model names on the y axis? Default is F (show labels)
 #'
 #' @export
 #'
-plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_space = T, log = NA) {
+plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_space = T, log = NA, hide_labels = F) {
 
   gcols = c("obs" = adjustcolor("blue", 0.5),
             "obs_synth" = "blue",
@@ -262,6 +263,6 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
   segments(y0 = yy, x0 = synth$lower, x1 = synth$upper, lwd = lwd, col = gcols, lend = 2)
   points(synth$est, yy, pch = 21, bg = gcols, lwd = 2, cex = lwd/10)
 
-  axis(2, at = yy, labels = synth$model, las = 1)
+  if(!hide_labels) axis(2, at = yy, labels = synth$model, las = 1)
   abline(v = vline, lty = 2)
 }
