@@ -234,10 +234,8 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
   if (missing(xlim)) {
     if(logaxs == "x") {
       xlim <- exp(range(pretty(log(as.numeric(unlist(synth[,c("lower", "upper", "l_wb", "u_wb")]))))))
-      vline <- 1
     } else {
       xlim <- range(pretty(as.numeric(unlist(synth[,c("lower", "upper", "l_wb", "u_wb")]))))
-      vline <- 1
     }
   }
 
@@ -253,8 +251,13 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
     yy <- nrow(synth):1
   }
 
+  if(logaxs == "x") {vline <- 1} else {vline <- 0}
+
   plot(0, type = "n", xlim = xlim, ylim = range(yy) + c(-0.5,0.5), log = logaxs,
        yaxt = "n", ylab = "", xlab = xlab, main = main)
+
+  grid(ny = NA, col = adjustcolor("black", 0.1), lty = 1)
+  abline(v = vline, lty = 2)
 
   gcols <- gcols[synth$group]
 
@@ -264,5 +267,4 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
   points(synth$est, yy, pch = 21, bg = gcols, lwd = 2, cex = lwd/10)
 
   if(!hide_labels) axis(2, at = yy, labels = synth$model, las = 1)
-  abline(v = vline, lty = 2)
 }
