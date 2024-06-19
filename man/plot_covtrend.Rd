@@ -9,6 +9,7 @@ plot_covtrend(
   xcov,
   trend_cov = NA,
   ci_cov = NA,
+  ci_col = "black",
   ev,
   ev_x,
   rp = c(6, 40),
@@ -32,6 +33,8 @@ plot_covtrend(
 \item{trend_cov}{Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case the trend is estimated at all values of xcov with all other covariates held at their mean value}
 
 \item{ci_cov}{(Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.}
+
+\item{ci_col}{String: set colour to be used for confidence bounds (if using). Default is 'black'.}
 
 \item{ev}{(Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model}
 

@@ -72,6 +72,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #' @param xcov String indicating the covariate to plot on the x-axis. Must appear in mdl$cov.
 #' @param trend_cov Data.frame containing values of the covariates to be used to plot the trend. Default value is NA, in which case the trend is estimated at all values of xcov with all other covariates held at their mean value
 #' @param ci_cov (Optional) Data.frame containing values of the covariates at which confidence intervals for the location parameter should be estimated. Default is NA, in which case no confidence bounds are plotted.
+#' @param ci_col String: set colour to be used for confidence bounds (if using). Default is 'black'.
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_x (Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model
 #' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
@@ -88,7 +89,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA, ev, ev_x, rp = c(6,40), add_loess = F, loess_col = "forestgreen",
+plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "black", ev, ev_x, rp = c(6,40), add_loess = F, loess_col = "forestgreen",
                           seed = 42, nsamp = 500, ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
@@ -154,9 +155,9 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA, ev, ev_x, rp =
     }), 1, quantile, c(0.025, 0.975), na.rm = T)
 
     # confidence interval & markers for mu' at factual & counterfactual covariates
-    segments(x0 = ci_cov[,xcov], y0 = mu_ci["2.5%",], y1 = mu_ci["97.5%",], lwd = 3, col = "red3", lend = 1)
+    segments(x0 = ci_cov[,xcov], y0 = mu_ci["2.5%",], y1 = mu_ci["97.5%",], lwd = 3, col = ci_col, lend = 1)
     # matplot(ci_cov[,"gmst"], t(mu_ci), pch = 3, add = T, col = "red3") # line ends: not very elegant, so removed for now
-    points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,,drop = F])$loc), pch = "_", col = "red3", lwd = 2)
+    points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,,drop = F])$loc), pch = "_", col = ci_col, lwd = 2)
   }
 
   # add a loess smoother
