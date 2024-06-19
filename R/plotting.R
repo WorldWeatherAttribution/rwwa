@@ -28,7 +28,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
   if(missing(ev_year)) { ev_year <- mdl$data$year[which.min(abs(mdl$x - ev))] }
 
   # set up legend
-  legend_labels = "location"
+  legend_labels = "Fitted value"
   legend_cols = "black"
   legend_lty = "solid"
   legend_lwd = lwd
@@ -115,7 +115,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA, ev, ev_x, rp =
   }
 
   # set up legend
-  legend_labels = "location"
+  legend_labels = "Fitted value"
   legend_cols = "black"
   legend_lty = "solid"
   legend_lwd = lwd
