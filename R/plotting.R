@@ -107,7 +107,13 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
     nsamp <- NA
     xlims <- range(x)
   } else {
+    # extend the x-axis to accommodate the CI covariates
     xlims <- range(pretty(c(ci_cov[,xcov], x)))
+
+    # if only the x-covariate is provided, set the other covariates to the mean value for plotting
+    for(cnm in mdl$covnm) {
+      if(!cnm %in% colnames(ci_cov)) ci_cov[,cnm] <- mean(mdl$data[,cnm])
+    }
   }
 
   if(is.na(unlist(trend_cov)[1])) {
