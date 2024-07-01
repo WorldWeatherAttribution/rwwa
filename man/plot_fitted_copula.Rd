@@ -4,10 +4,12 @@
 \alias{plot_fitted_copula}
 \title{Plot a fitted bivariate copula}
 \usage{
-plot_fitted_copula(joint_model, ...)
+plot_fitted_copula(joint_model, levels = c(0.5, 1, 1.5), ...)
 }
 \arguments{
 \item{joint_model}{A list containing two nonstationary marginal distriutions and a joint copula, as returned by 'fit_copula'.}
+
+\item{levels}{Vector of levels at which contours of the empirical and fitted contours should be plotted.}
 
 \item{...}{Other graphical parameters to be passed to the plotting function.}
 }

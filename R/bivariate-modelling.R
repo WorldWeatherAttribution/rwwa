@@ -37,11 +37,12 @@ fit_copula <- function(mdl_x, mdl_y) {
 #' Plot the fitted copula against the observed sample to check the goodness of fit. Formal goodness of fit testing is not yet implemented.
 #'
 #' @param joint_model A list containing two nonstationary marginal distriutions and a joint copula, as returned by 'fit_copula'.
+#' @param levels Vector of levels at which contours of the empirical and fitted contours should be plotted.
 #' @param ... Other graphical parameters to be passed to the plotting function.
 #'
 #' @export
 #'
-plot_fitted_copula <- function(joint_model, ...) {
+plot_fitted_copula <- function(joint_model, levels = c(0.5,1,1.5), ...) {
 
   # transform marginals to U
   u_x <- map_to_u(joint_model$mdl_x)
@@ -53,8 +54,8 @@ plot_fitted_copula <- function(joint_model, ...) {
   plot(u_x, u_y, col = "black", pch = 20, ...)
   points(samp, col = "cornflowerblue", pch = 1)
 
-  contour(kde2d(u_x, u_y), col = "black", add = T, levels = c(0.5,1))
-  contour(joint_model$copula, dCopula, add = T, col = "cornflowerblue", lty = 2, levels = c(0.5,1))
+  contour(kde2d(u_x, u_y), col = "black", add = T, levels = levels)
+  contour(joint_model$copula, dCopula, add = T, col = "cornflowerblue", lty = 2, levels = levels)
 }
 
 
