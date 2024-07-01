@@ -1,8 +1,8 @@
 exportPattern("^[[:alpha:]]+")
 
-importFrom("copula", "dCopula", "fitCopula", "pCopula", "rCopula", "tCopula")
+importFrom("copula", "contour", "dCopula", "fitCopula", "pCopula", "rCopula", "tCopula")
 importFrom("extRemes", "devd", "pevd", "qevd")
-importFrom("graphics", "abline", "axis", "contour", "grid", "legend", "lines", "matplot", "mtext",
+importFrom("graphics", "abline", "axis", "grid", "legend", "lines", "matplot", "mtext",
                "par", "points", "polygon", "rug", "segments", "text")
 importFrom("grDevices", "adjustcolor")
 importFrom("MASS", "kde2d")
