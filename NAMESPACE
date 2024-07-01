@@ -1,10 +1,13 @@
 exportPattern("^[[:alpha:]]+")
 
-importFrom("stats", "setNames", "dnorm", "qnorm", "pnorm", "optim", "sd", "quantile", "cor", "fitted", "formula", "loess")
-importFrom("extRemes", "devd", "qevd", "pevd")
-importFrom("grDevices", "adjustcolor")
-importFrom("graphics", "abline", "axis", "grid", "legend", "lines", "matplot", "mtext",
+importFrom("copula", "dCopula", "fitCopula", "pCopula", "rCopula", "tCopula")
+importFrom("extRemes", "devd", "pevd", "qevd")
+importFrom("graphics", "abline", "axis", "contour", "grid", "legend", "lines", "matplot", "mtext",
                "par", "points", "polygon", "rug", "segments", "text")
-importFrom("utils", "read.csv")
-importFrom("plyr", "rbind.fill")
+importFrom("grDevices", "adjustcolor")
+importFrom("MASS", "kde2d")
 importFrom("methods", "is")
+importFrom("plyr", "rbind.fill")
+importFrom("stats", "coef", "cor", "dnorm", "fitted", "formula", "loess", "optim", "pnorm", "qnorm", "quantile", "sd",  "setNames")
+importFrom("utils", "read.csv")
+
