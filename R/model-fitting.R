@@ -45,7 +45,7 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
 #' @param type String defining the relationship between the fitted values and the covariate (currently implemented: 'shift' and 'fixeddisp')
 #' @param data Data.frame with named columns containing the variable and any covariates of interest
 #' @param varnm String identifying the dependent variable (must be a column name in 'data')
-#' @param covnm String or vector of strings identifying the predictors (must be column names in 'data')
+#' @param covnm String or vector of strings identifying the predictors (must be column names in 'data'). If not provided, a constant model will be fitted using a dummy covariate.
 #' @param lower Boolean indicating whether to evaluate the lower tail of the data or not: default is F (evaluate the upper tail).
 #' @param ev_year (optional) Scalar specifying the year of the event of interest; default is to use the value from the last row of 'data'
 #' @param ev (optional) Scalar specifying the magnitude of the event of interest; default is to use the value corresponding to 'ev_year'
@@ -57,9 +57,15 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
 #'
 #' @export
 #'
-fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev_year = NA, ev = NA, method = "BFGS") {
+fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm = NA, lower = F, ev_year = NA, ev = NA, method = "BFGS") {
 
-  # remove extraneous
+  # if no covariate name provided, add a dummy covariate & fit stationary series instead
+  if(is.na(covnm[1])) {
+    data <- cbind(data, "const" = 1)
+    covnm <- "const"
+  }
+
+  # remove extraneous columns from dataframes
   cov <- data[, covnm, drop = F]
   k <- length(covnm)
   x <- data[,varnm]

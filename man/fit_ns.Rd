@@ -9,7 +9,7 @@ fit_ns(
   type = "fixeddisp",
   data,
   varnm,
-  covnm,
+  covnm = NA,
   lower = F,
   ev_year = NA,
   ev = NA,
@@ -25,7 +25,7 @@ fit_ns(
 
 \item{varnm}{String identifying the dependent variable (must be a column name in 'data')}
 
-\item{covnm}{String or vector of strings identifying the predictors (must be column names in 'data')}
+\item{covnm}{String or vector of strings identifying the predictors (must be column names in 'data'). If not provided, a constant model will be fitted using a dummy covariate.}
 
 \item{lower}{Boolean indicating whether to evaluate the lower tail of the data or not: default is F (evaluate the upper tail).}
 
