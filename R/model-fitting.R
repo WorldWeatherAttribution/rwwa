@@ -110,6 +110,7 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm, lower = F, ev_y
   # event year: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
   if(is.na(ev_year)) { ev_year <- data$year[length(x)] }
   fitted[["ev_year"]] <- ev_year
+  fitted[["ev_idx"]] <- which(data$year == ev_year)
 
   # event value: assume that event of interest is most recent, unless told otherwise (used in later plotting functions)
   if(is.na(ev)) {
