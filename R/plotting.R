@@ -80,6 +80,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #' @param loess_col String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
+#' @param xlim (Optional) vector defining the left and right limits of the x axes
 #' @param ylim (Optional) vector defining the lower and upper limits of the y axes
 #' @param xlab (Optional) string: label for x axis. Default is to use 'xcov'
 #' @param ylab (Optional) string: label for y axis. Default is to leave blank.
@@ -90,7 +91,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #' @export
 #'
 plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "black", ev, ev_x, rp = c(6,40), add_loess = F, loess_col = "forestgreen",
-                          seed = 42, nsamp = 500, ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
+                          seed = 42, nsamp = 500, xlim = NA, ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
   if(is.na(ylab)) { ylab <- mdl$varnm}
@@ -115,6 +116,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
       if(!cnm %in% colnames(ci_cov)) ci_cov[,cnm] <- mean(mdl$data[,cnm])
     }
   }
+  if(is.na(xlim)) xlim <- xlims
 
   if(is.na(unlist(trend_cov)[1])) {
     # if no plotting covariate provided, fix all covariates at mean value except for xcov
@@ -136,7 +138,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
     legend_lwd = c(legend_lwd,c(lwd,max(1,lwd -1))[1:length(rp)])
   }
 
-  plot(x, mdl$x, pch = 20, main = main, xlab = "", ylab = "", ylim = ylim, xlim = xlims,
+  plot(x, mdl$x, pch = 20, main = main, xlab = "", ylab = "", ylim = ylim, xlim = xlim,
        col = adjustcolor("black", 0.6))
   mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
   mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))

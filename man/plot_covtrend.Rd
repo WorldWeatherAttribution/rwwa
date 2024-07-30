@@ -17,6 +17,7 @@ plot_covtrend(
   loess_col = "forestgreen",
   seed = 42,
   nsamp = 500,
+  xlim = NA,
   ylim = NA,
   xlab = NA,
   ylab = NA,
@@ -49,6 +50,8 @@ plot_covtrend(
 \item{seed}{Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)}
 
 \item{nsamp}{Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.}
+
+\item{xlim}{(Optional) vector defining the left and right limits of the x axes}
 
 \item{ylim}{(Optional) vector defining the lower and upper limits of the y axes}
 
