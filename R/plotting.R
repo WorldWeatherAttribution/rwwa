@@ -116,7 +116,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
       if(!cnm %in% colnames(ci_cov)) ci_cov[,cnm] <- mean(mdl$data[,cnm])
     }
   }
-  if(is.na(xlim)) xlim <- xlims
+  if(is.na(unlist(xlim)[1])) xlim <- xlims
 
   if(is.na(unlist(trend_cov)[1])) {
     # if no plotting covariate provided, fix all covariates at mean value except for xcov
