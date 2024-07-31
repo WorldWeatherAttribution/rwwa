@@ -186,13 +186,15 @@ synthesis <- function(obs_in = NA, models_in, synth_type = "abs") {
     res[,c("est", "lower", "upper", "l_wb", "u_wb")] <- exp(res[,c("est", "lower", "upper", "l_wb", "u_wb")])
     sig_obs <- exp(sig_obs)
     sig_mod <- exp(sig_mod)
+    umean <- exp(umean)
   } else if(synth_type == "rel") {
     res[,c("est", "lower", "upper", "l_wb", "u_wb")] <- 100*(exp(res[,c("est", "lower", "upper", "l_wb", "u_wb")])-1)
     sig_obs <- 100*(exp(sig_obs)-1)
     sig_mod <- 100*(exp(sig_mod)-1)
+    umean <- 100*(exp(umean)-1)
   }
 
-  return(list(synth_type = synth_type, sig_obs = sig_obs, "chi2/dof" = chi2 / mdof, df = res))
+  return(list(synth_type = synth_type, sig_obs = sig_obs, "chi2/dof" = chi2 / mdof, df = res, uw_mean = umean))
 }
 
 
