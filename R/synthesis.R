@@ -18,15 +18,14 @@ getsynmean <- function(data, sig_mod = 0) {
   w = 1/(((data$upper - data$lower)/(2*1.96))^2 + sig_mod^2)
   w1 = sum(w)
 
-  # weighted sum of squares & bounds
+  # weighted mean
   s1 <- sum(w*data$est) / w1
-  ss2 <- apply(data[,c("est", "lower", "upper")], 2, function(b) sum((w*(data$est - b))^2))
-  ss2 <- sqrt(ss2) / w1
 
-  # if non-zero model representation error, extend 95% intervals accordingly
-  if (sig_mod > 0) { ss2 <- sqrt(ss2^2 + (1.96*sig_mod)^2) }
+  # get weighted interval by adding variances
+  sig_lower = sqrt(sum(w * (((data$est - data$lower)/1.96)^2 + sig_mod^2)) / w1)
+  sig_upper = sqrt(sum(w * (((data$est - data$upper)/1.96)^2 + sig_mod^2)) / w1)
 
-  return(s1 + (ss2 * c(0,-1,1)))
+  return(setNames(s1 + c(0, -1.96*sig_lower, +1.96*sig_upper), c("est", "lower", "upper")))
 }
 
 
@@ -150,11 +149,11 @@ synthesis <- function(obs_in = NA, models_in, synth_type = "abs") {
   w_mod <- unname((models["upper"] - models["lower"])^{-2})
 
   wmean <- (w_obs * obs["est"] + w_mod * models["est"]) / (w_obs + w_mod)
-  synth <- setNames(c(wmean,
-                      wmean - sqrt( (w_obs*(obs["est"]-obs["lower"]))^2 + (w_mod*(models["est"]-models["lower"]))^2 )/(w_obs+w_mod),
-                      wmean + sqrt( (w_obs*(obs["est"]-obs["upper"]))^2 + (w_mod*(models["est"]-models["upper"]))^2 )/(w_obs+w_mod)),
-                    c("est", "lower", "upper"))
 
+  # get weighted interval by averaging variances
+  sig_lower = sqrt((w_obs * ((obs["est"] - obs["lower"])/1.96)^2 + w_mod * ((models["est"] - models["lower"])/1.96)^2) / (w_obs + w_mod))
+  sig_upper = sqrt((w_obs * ((obs["est"] - obs["upper"])/1.96)^2 + w_mod * ((models["est"] - models["upper"])/1.96)^2) / (w_obs + w_mod))
+  synth <- setNames(c(wmean, wmean - 1.96*sig_lower, wmean + 1.96*sig_upper), c("est", "lower", "upper"))
 
   # unweighted mean of obs and models
   umean <- (obs["est"] +  models["est"]) / 2
