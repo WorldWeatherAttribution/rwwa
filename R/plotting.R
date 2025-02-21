@@ -100,7 +100,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
 
   x <- mdl$data[,xcov]
   if(missing(ev))    { ev <- mdl$ev }
-  if(missing(ev_x)) {ev_x <- x[which(mdl$x == ev)]}
+  if(missing(ev_x)) { ev_x <- x[mdl$ev_idx] }
   o <- order(x)
 
   if(is.na(unlist(ci_cov)[1])) {
