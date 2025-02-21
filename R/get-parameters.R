@@ -49,10 +49,15 @@ get.ns_pars <- function(fittype, pars, fixed_cov) {
     loc = pars["mu0"] + effect_a
     scale = rep(pars["sigma0"], length(loc))
 
-  } else if(fittype == "shiftscale") {
+  } else if(fittype %in% c("shiftscale", "shiftscale_exp")) {
 
     loc = pars["mu0"] + effect_a
     scale = exp(pars["sigma0"] + effect_b)
+
+  } else if(fittype == "shiftscale_linear") {
+
+    loc = pars["mu0"] + effect_a
+    scale = pars["sigma0"] + effect_b
 
   } else {
     cat(fittype, "not implemented")
