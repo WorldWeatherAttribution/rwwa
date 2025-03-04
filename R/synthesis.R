@@ -193,7 +193,7 @@ synthesis <- function(obs_in = NA, models_in, synth_type = "abs") {
     umean <- 100*(exp(umean)-1)
   }
 
-  return(list(synth_type = synth_type, sig_obs = sig_obs, "chi2/dof" = chi2 / mdof, df = res, uw_mean = umean))
+  return(list(synth_type = synth_type, sig_obs = sig_obs, "chi2/dof" = chi2 / mdof, sig_mod = sig_mod, df = res, uw_mean = umean))
 }
 
 
