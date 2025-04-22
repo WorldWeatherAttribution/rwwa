@@ -246,7 +246,7 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
   nobs <- sum(synth$group == "obs")
   nmod <- sum(synth$group == "models")
 
-  if(add_space) {
+  if(add_space & nobs > 0) {
     yy <- c(rev(0:nobs+nmod+4), rev(0:nmod+2), 0)
   } else {
     yy <- nrow(synth):1
