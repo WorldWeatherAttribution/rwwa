@@ -50,7 +50,7 @@ mdl_ests <- function(mdl, cov_f, cov_cf, ev, rp = NA) {
       }))
   }
 
-  return(c(mdl$par, "disp" = disp, "event_magnitude" = ev, "return_period" = rp, changes))
+  return(c(mdl$par, "disp" = disp, "event_magnitude" = ev, "return_period" = rp, changes, "aic" = aic(mdl)))
 }
 
 
@@ -140,7 +140,6 @@ boot_ci <- function(mdl, cov_f, cov_cf, ev, rp = NA, seed = 42, nsamp = 500, ci 
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
 #' @param ci Scalar from 0 to 1 defining width of confidence interval. Default is 0.95
 #' @param return_sample Boolean: return confidence interval (F) or full bootstrap sample (T)? Default is to return the interval (F).
-#' @param di_relative Boolean: force the return of relative (F) or absolute (T) change in intensity. Default is to choose based on fit type (shift = absolute, fixeddisp = relative)
 #'
 #' @return Data.frame containing estimates of all model parameters and quantities of interest, along with limits of central confidence interval; or matrix of bootstrapped values of each quantity (can be useful if 95% interval is unstable)
 #'
@@ -148,13 +147,13 @@ boot_ci <- function(mdl, cov_f, cov_cf, ev, rp = NA, seed = 42, nsamp = 500, ci 
 #'
 cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
                            y_start = 1979, y_now = as.integer(substr(Sys.Date(),1,4)), y_fut = 2050,
-                           nsamp = 5, seed = 42, ci = 0.95, return_sample = F, di_relative = NA) {
+                           nsamp = 5, seed = 42, ci = 0.95, return_sample = F) {
 
   alpha <- 1-ci
   set.seed(seed)
 
   # fill in missing parameters
-  if(is.na(di_relative)) di_relative <- mdl$type == "fixeddisp"
+  #if(is.na(di_relative)) di_relative <- mdl$type == "fixeddisp"
 
   # remove any extraneous variables from covariate tables
   cov_f <- cov_f[,mdl$covnm, drop = F]
@@ -183,12 +182,12 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
 
   if(mdl$type == "fixeddisp") { key_par <- "disp" } else { key_par <- "sigma0" }
   if(mdl$dist == "gev") { key_par <- c(key_par, "shape") }
-  if(di_relative) { di_cnm <- "dI_rel" } else { di_cnm <- "dI_abs" }
+  #if(di_relative) { di_cnm <- "dI_rel" } else { di_cnm <- "dI_abs" }
 
   # get bootstrapped intervals, select only the elements of interest
   ci_eval <- boot_ci(mdl_eval, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp)[key_par,,drop = F]
   ci_attr <- boot_ci(mdl_attr, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp)
-  ci_attr <- ci_attr[grepl(paste0("PR|",di_cnm), rownames(ci_attr)),]
+  ci_attr <- ci_attr[grepl("PR|dI_abs|dI_rel", rownames(ci_attr)),]
 
   # flatten & rename
   ci_eval <- unlist(lapply(rownames(ci_eval), function(cnm) setNames(ci_eval[cnm,], paste("eval", gsub("_", "-", cnm), c("est", "lower", "upper"), sep = "_"))))
@@ -209,7 +208,7 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
 
     # bootstrap results
     ci_proj <- boot_ci(mdl_proj, cov_f = cov_f, cov_cf = cov_fut, ev = event_rl, rp = rp, nsamp = nsamp)
-    ci_proj <- ci_proj[grepl(paste0("PR|",di_cnm), rownames(ci_proj)),]
+    ci_proj <- ci_proj[grepl("PR|dI_abs|dI_rel", rownames(ci_proj)),]
 
     # invert future projections
     ci_proj[grepl("PR", rownames(ci_proj)),] <- 1/ci_proj[grepl("PR", rownames(ci_proj)),c(1,3,2)]
