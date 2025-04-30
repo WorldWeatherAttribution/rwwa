@@ -6,7 +6,7 @@
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_year (Optional) scalar: year of the event of interest. If not provided, inferred from the fitted model
 #' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
-#' @param add_loess Boolean: add a Loess smoother to the plot? Default is F.
+#' @param add_loess Boolean: add a Loess smoother to the plot? Default is T.
 #' @param loess_col String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.
 #' @param xlab (Optional) string: label for x axis: default is 'Year'
 #' @param ylab (Optional) string: label for y axis: default is to use variable name
@@ -18,7 +18,7 @@
 #'
 #' @export
 #'
-plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col = "forestgreen",
+plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = T, loess_col = "forestgreen",
                        xlab = "Year", ylab = NA, legend_pos = "topleft", main = "", xlim = NA, ylim = NA, lwd = 2) {
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
@@ -76,7 +76,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #' @param ev (Optional) scalar: magnitude of the event of interest. If not provided, event value is picked up from the fitted model
 #' @param ev_x (Optional) scalar: x-value against which to plot the event of interest. If not provided, event year is picked up from the fitted model
 #' @param rp (Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)
-#' @param add_loess Boolean: add a Loess smoother to the plot? Default is F.
+#' @param add_loess Boolean: add a Loess smoother to the plot? Default is T.
 #' @param loess_col String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.
 #' @param seed Scalar: seed to be used to initialise random sample for bootstrapped confidence intervals (if using)
 #' @param nsamp Scalar: number of bootstrap samples to be used to estimate confidence intervals for location parameter. Set to NA if no confidence intervals are required. Default is 500.
@@ -90,7 +90,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = F, loess_col
 #'
 #' @export
 #'
-plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "black", ev, ev_x, rp = c(6,40), add_loess = F, loess_col = "forestgreen",
+plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "black", ev, ev_x, rp = c(6,40), add_loess = T, loess_col = "forestgreen",
                           seed = 42, nsamp = 500, xlim = NA, ylim = NA, xlab = NA, ylab = NA, legend_pos = "topleft", main = "", lwd = 3) {
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
