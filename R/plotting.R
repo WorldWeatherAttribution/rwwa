@@ -281,7 +281,7 @@ plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500, mo
     x_ci <- c(5,10,20,50,100,200,500,1000,2000,5000,10000)
     set.seed(seed)
 
-    mdl_df <- mdl$data[,c(mdl$varnm, mdl$covnm)]
+    mdl_df <- mdl$data
     boot_res <- sapply(1:nsamp, function(i) {
       boot_df <- mdl_df[sample(1:nrow(mdl_df), nrow(mdl_df), replace = T),]
       tryCatch({
