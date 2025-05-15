@@ -16,8 +16,7 @@ cmodel_results(
   nsamp = 5,
   seed = 42,
   ci = 0.95,
-  return_sample = F,
-  di_relative = NA
+  return_sample = F
 )
 }
 \arguments{
@@ -44,8 +43,6 @@ cmodel_results(
 \item{ci}{Scalar from 0 to 1 defining width of confidence interval. Default is 0.95}
 
 \item{return_sample}{Boolean: return confidence interval (F) or full bootstrap sample (T)? Default is to return the interval (F).}
-
-\item{di_relative}{Boolean: force the return of relative (F) or absolute (T) change in intensity. Default is to choose based on fit type (shift = absolute, fixeddisp = relative)}
 }
 \value{
 Data.frame containing estimates of all model parameters and quantities of interest, along with limits of central confidence interval; or matrix of bootstrapped values of each quantity (can be useful if 95% interval is unstable)
