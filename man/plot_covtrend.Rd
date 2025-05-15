@@ -13,7 +13,7 @@ plot_covtrend(
   ev,
   ev_x,
   rp = c(6, 40),
-  add_loess = F,
+  add_loess = T,
   loess_col = "forestgreen",
   seed = 42,
   nsamp = 500,
@@ -43,7 +43,7 @@ plot_covtrend(
 
 \item{rp}{(Optional) vector of length two, setting return period for which effective return levels should be plotted. Default is c(6,40)}
 
-\item{add_loess}{Boolean: add a Loess smoother to the plot? Default is F.}
+\item{add_loess}{Boolean: add a Loess smoother to the plot? Default is T.}
 
 \item{loess_col}{String: set colour to be used for Loess smoother (if using). Default is 'forestgreen'.}
 
