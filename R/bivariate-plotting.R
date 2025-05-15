@@ -29,7 +29,7 @@ copula_mesh <- function(joint_model, fixed_cov, xrange, yrange, n = 32) {
   x_umesh <- sapply(x_mesh, map_to_u, mdl = mdl_x, fixed_cov = fixed_cov)
   y_umesh <- sapply(y_mesh, map_to_u, mdl = mdl_y, fixed_cov = fixed_cov)
 
-  return(list("x" = x_mesh, "y" = y_mesh, "z" = sapply(y_umesh, function(y) sapply(x_umesh, function(x) pCopula(cbind(x,y), joint_model$copula)))))
+  return(list("x" = x_mesh, "y" = y_mesh, "z" = sapply(x_umesh, function(x) sapply(y_umesh, function(y) pCopula(cbind(x,y), joint_model$copula)))))
 }
 
 
