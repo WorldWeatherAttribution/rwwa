@@ -26,8 +26,8 @@ copula_mesh <- function(joint_model, fixed_cov, xrange, yrange, n = 32) {
   y_mesh <- seq(yrange[1], yrange[2], length.out = n)
 
   # convert the regular mesh to U space
-  x_umesh <- sapply(x_mesh, map_to_u, mdl = mdl_x, fixed_cov = fixed_cov)
-  y_umesh <- sapply(y_mesh, map_to_u, mdl = mdl_y, fixed_cov = fixed_cov)
+  x_umesh <- map_to_u(mdl_x, x_mesh, fixed_cov = fixed_cov)
+  y_umesh <- map_to_u(mdl_y, y_mesh, fixed_cov = fixed_cov)
 
   return(list("x" = x_mesh, "y" = y_mesh, "z" = sapply(x_umesh, function(x) sapply(y_umesh, function(y) pCopula(cbind(x,y), joint_model$copula)))))
 }
