@@ -212,7 +212,7 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
 
     # invert future projections
     ci_proj[grepl("PR", rownames(ci_proj)),] <- 1/ci_proj[grepl("PR", rownames(ci_proj)),c(1,3,2)]
-    ci_proj[grepl(di_cnm, rownames(ci_proj)),] <- -ci_proj[grepl(di_cnm, rownames(ci_proj)), c(1,3,2)]
+    ci_proj[grepl("dI_", rownames(ci_proj)),] <- -ci_proj[grepl("dI_", rownames(ci_proj)), c(1,3,2)]
 
     ci_proj <- unlist(lapply(rownames(ci_proj), function(cnm) setNames(ci_proj[cnm,], paste("proj", gsub("_", "-", cnm), c("est", "lower", "upper"), sep = "_"))))
 
