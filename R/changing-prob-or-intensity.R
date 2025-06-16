@@ -29,6 +29,8 @@ map_to_u <- function(mdl, x, fixed_cov = NA) {
     pit <- pnorm(x, mean = pars$loc, sd = pars$scale, lower.tail = mdl$lower)
   } else if(mdl$dist == "gev") {
     pit <- sapply(1:length(pars$loc), function(i) pevd(x[i], loc = pars$loc[i], scale = pars$scale[i], shape = pars$shape[i], lower.tail = mdl$lower))
+  } else if(mdl$dist == "gumbel") {
+    pit <- sapply(1:length(pars$loc), function(i) pevd(x[i], loc = pars$loc[i], scale = pars$scale[i], shape = 0, lower.tail = mdl$lower))
   } else {
     return(NULL)
   }
@@ -70,6 +72,12 @@ map_from_u <- function(mdl, u, fixed_cov = NA) {
     erl <- sapply(1:length(u), function(j) {
       sapply(1:length(pars$loc), function(i) {
         qevd(u[j], loc = pars$loc[i], scale = pars$scale[i], shape = pars$shape[i], lower.tail = mdl$lower)
+      })
+    })
+  } else if(mdl$dist == "gumbel") {
+    erl <- sapply(1:length(u), function(j) {
+      sapply(1:length(pars$loc), function(i) {
+        qevd(u[j], loc = pars$loc[i], scale = pars$scale[i], shape = 0, lower.tail = mdl$lower)
       })
     })
   } else {

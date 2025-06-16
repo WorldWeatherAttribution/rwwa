@@ -32,6 +32,8 @@ ns_loglik <- function(pars, cov, x, dist, fittype) {
   } else if(dist == "gev") {
     shape = pars["shape"]
     return(-sum(devd(x, loc = loc, scale = scale, shape = shape, log = T)))
+  } else if (dist == "gumbel") {
+    return(-sum(devd(x, loc = loc, scale = scale, shape = 0, log = T)))
   } else {
     print(paste(dist, "not implemented"))
     return()
@@ -73,14 +75,14 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm = NA, lower = F,
   # should also add something to handle case with no covariates
 
   # currently only works for distributions fully specified by mean & sd: only tested for normal, lognormal
-  if(! dist %in% c("norm", "gev")) {
+  if(! dist %in% c("norm", "gev", "gumbel")) {
     print("Not yet implemented: use norm or gev")
     return()
   }
 
   # if looking at lower tail with a GEV, necessary to negate data and consider block maxima - add flag to keep track
   minima <- F
-  if (lower & (dist %in% c("gev"))) {
+  if (lower & (dist %in% c("gev", "gumbel"))) {
     x <- -x
     minima <- T
   }
