@@ -25,7 +25,7 @@ map_to_u <- function(mdl, x, fixed_cov = NA) {
   }
 
   # get exceedance probability
-  if(mdl$dist == "norm") {
+  if(mdl$dist %in% c("norm", "norm_logt")) {
     pit <- pnorm(x, mean = pars$loc, sd = pars$scale, lower.tail = mdl$lower)
   } else if(mdl$dist == "gev") {
     pit <- sapply(1:length(pars$loc), function(i) pevd(x[i], loc = pars$loc[i], scale = pars$scale[i], shape = pars$shape[i], lower.tail = mdl$lower))
@@ -63,7 +63,7 @@ map_from_u <- function(mdl, u, fixed_cov = NA) {
   }
 
   # map quantile onto stationary distribution
-  if(mdl$dist == "norm") {
+  if(mdl$dist %in% c("norm", "norm_logt")) {
     # erl <- sapply(1:length(u), function(j) {
     #     qnorm(u[j], mean = pars$loc, sd = pars$scale, lower.tail = mdl$lower)
     # })
@@ -193,10 +193,7 @@ int_change <- function(mdl, rp = NA, cov_f, cov_cf, relative = F) {
   rl_cf <- eff_return_level(mdl, rp, fixed_cov = cov_cf)
 
   # if variable is logged, convert to real values first
-  if(substr(mdl$varnm, 1, 5) == "log10") {
-    rl <- 10^rl
-    rl_cf <- 10^rl_cf
-  } else if (substr(mdl$varnm, 1, 3) == "log"){
+  if(mdl$dist %in% c("norm_logt")) {
     rl <- exp(rl)
     rl_cf <- exp(rl_cf)
   }

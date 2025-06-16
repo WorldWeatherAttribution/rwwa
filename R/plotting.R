@@ -23,7 +23,7 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = T, loess_col
 
   if(is.na(ylab)) {ylab <- mdl$varnm}
   if(is.na(unlist(xlim)[1])) { xlim <- range(mdl$data$year) }
-  if(is.na(unlist(ylim)[1])) { ylim <- range(pretty(mdl$x)) }
+  if(is.na(unlist(ylim)[1])) { ylim <- range(pretty(mdl$data[,mdl$varnm])) }
   if(missing(ev)) { ev <- mdl$ev }
   if(missing(ev_year)) { ev_year <- mdl$data$year[which.min(abs(mdl$x - ev))] }
 
@@ -42,12 +42,20 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = T, loess_col
     legend_lwd = c(legend_lwd,c(lwd,max(1,lwd -1))[1:length(rp)])
   }
 
-  plot(mdl$data$year, mdl$x, type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = xlab,
+  plot(mdl$data$year, mdl$data[,mdl$varnm], type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = xlab,
        ylab = ylab, main = main, xlim = xlim, ylim = ylim)
 
-  lines(mdl$data$year-0.5, ns_pars(mdl)$loc, col = adjustcolor("black", 1), lwd = lwd)
-  lines(mdl$data$year-0.5, eff_return_level(mdl, rp[1]), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
-  lines(mdl$data$year-0.5, eff_return_level(mdl, rp[2]), type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = max(1,lwd -1))
+  loc <- ns_pars(mdl)$loc
+  rl1 <- eff_return_level(mdl, rp[1])
+  rl2 <- eff_return_level(mdl, rp[2])
+
+  if (mdl$dist %in% c("norm_logged")) {
+    loc <- exp(loc); rl1 <- exp(rl1); rl2 <- exp(rl2); ev <- exp(ev)
+  }
+
+  lines(mdl$data$year-0.5, loc, col = adjustcolor("black", 1), lwd = lwd)
+  lines(mdl$data$year-0.5, rl1, type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = lwd)
+  lines(mdl$data$year-0.5, rl2, type = "l", lty = 1, col = adjustcolor("blue", 1), lwd = max(1,lwd -1))
 
   # add a loess smoother
   if(add_loess) {
@@ -95,7 +103,7 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
 
   if(is.na(xlab)) { xlab <- toupper(xcov)}
   if(is.na(ylab)) { ylab <- mdl$varnm}
-  if(is.na(ylim[1])) { ylim <- range(pretty(mdl$x)) }
+  if(is.na(ylim[1])) { ylim <- range(pretty(mdl$data[,mdl$varnm])) }
   if(missing(ev)) { ev <- mdl$ev }
 
   x <- mdl$data[,xcov]
@@ -143,12 +151,20 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
   mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
   mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
 
+  loc <- ns_pars(mdl, fixed_cov = trend_cov)$loc[o]
+  rl1 <- eff_return_level(mdl, rp[1], fixed_cov = trend_cov)[o]
+  rl2 <- eff_return_level(mdl, rp[2], fixed_cov = trend_cov)[o]
+
+  if (mdl$dist %in% c("norm_logged")) {
+    loc <- exp(loc); rl1 <- exp(rl1); rl2 <- exp(rl2); ev <- exp(ev)
+  }
+
   points(ev_x, ev, col = "magenta", lwd = 2, pch = 0)
 
   # trend lines
-  lines(x[o], ns_pars(mdl, fixed_cov = trend_cov)$loc[o], lwd = 3, col = "black", lty = 1)
-  lines(x[o], eff_return_level(mdl, rp[1], fixed_cov = trend_cov)[o], col = "blue", lwd = 3, lty = 1)
-  lines(x[o], eff_return_level(mdl, rp[2], fixed_cov = trend_cov)[o], col = "blue", lwd = 2, lty = 1)
+  lines(x[o], loc, lwd = 3, col = "black", lty = 1)
+  lines(x[o], rp1, col = "blue", lwd = 3, lty = 1)
+  lines(x[o], rp2, col = "blue", lwd = 2, lty = 1)
 
   # get confidence interval for mu' (if not required, set ci_cov to NA)
   if(!is.na(nsamp)) {
@@ -163,9 +179,14 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
     }), 1, quantile, c(0.025, 0.975), na.rm = T)
 
     # confidence interval & markers for mu' at factual & counterfactual covariates
-    segments(x0 = ci_cov[,xcov], y0 = mu_ci["2.5%",], y1 = mu_ci["97.5%",], lwd = 3, col = ci_col, lend = 1)
-    # matplot(ci_cov[,"gmst"], t(mu_ci), pch = 3, add = T, col = "red3") # line ends: not very elegant, so removed for now
-    points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,,drop = F])$loc), pch = "_", col = ci_col, lwd = 2)
+    if (mdl$dist %in% c("norm_logged")) {
+      segments(x0 = ci_cov[,xcov], y0 = exp(mu_ci["2.5%",]), y1 = exp(mu_ci["97.5%",]), lwd = 3, col = ci_col, lend = 1)
+      points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) exp(ns_pars(mdl, ci_cov[rnm,,drop = F])$loc)), pch = "_", col = ci_col, lwd = 2)
+    } else {
+      segments(x0 = ci_cov[,xcov], y0 = mu_ci["2.5%",], y1 = mu_ci["97.5%",], lwd = 3, col = ci_col, lend = 1)
+      # matplot(ci_cov[,"gmst"], t(mu_ci), pch = 3, add = T, col = "red3") # line ends: not very elegant, so removed for now
+      points(ci_cov[,xcov], sapply(rownames(ci_cov), function(rnm) ns_pars(mdl, ci_cov[rnm,,drop = F])$loc), pch = "_", col = ci_col, lwd = 2)
+    }
   }
 
   # add a loess smoother
@@ -237,6 +258,16 @@ plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500, mo
   rp_event_pres <- 1/map_to_u(mdl, ev, fixed_cov = cov_f)
   rp_event_cf <- 1/map_to_u(mdl, ev, fixed_cov = cov_cf)
 
+  if (mdl$dist %in% c("norm_logged")) {
+    rl_curve_pres <- exp(rl_curve_pres)
+    rl_curve_cf <- exp(rl_curve_cf)
+    rl_obs_pres <- exp(rl_obs_pres)
+    rl_obs_cf <- exp(rl_obs_cf)
+    rp_event_pres <- exp(rp_event_pres)
+    rp_event_cf <- exp(rp_event_cf)
+    ev <- exp(ev)
+  }
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # prep axes
 
@@ -291,6 +322,7 @@ plot_returnlevels <- function(mdl, cov_f, cov_cf, ev, seed = 42, nsamp = 500, mo
       }, error = function(cond) {return(rep(NA, length(x_ci)*2))})
     })
     est_ci <- apply(boot_res, 1, quantile, c(0.025, 0.975), na.rm = T)
+    if (mdl$dist %in% c("norm_logged")) est_ci <- exp(est_ci)
 
     # shaded region for confidence intervals
     polygon(x = c(x_ci, rev(x_ci)), y = c(est_ci[1,1:length(x_ci)], rev(est_ci[2,1:length(x_ci)])), density = NULL, border = NA, col = adjustcolor("firebrick", 0.1))
