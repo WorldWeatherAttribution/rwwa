@@ -269,3 +269,57 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
 
   if(!hide_labels) axis(2, at = yy, labels = synth$model, las = 1)
 }
+
+
+################################################################################################################################
+#' Replace infinite probability ratios with finite estimates (for plotting only)
+#'
+#' @details
+#' Infinite probability ratios are replaced with finite values based on the bounds and estimates from other models, following the approach
+#' proposed in Otto et al. (2024). Where the lower bound and best estimate are both finite, the upper bound is assumed to be a six-sigma interval above the best estimate.
+#' For models where only the lower bound is finite, the highest finite upper bound from the other models is used as the 'best estimate', and the upper bound is inferred in the same way.
+#' Zero lower bounds are not yet handled by this method.
+#'
+#' @references{
+#' Otto, F. E., Barnes, C., Philip, S., Kew, S., van Oldenborgh, G. J., & Vautard, R. (2024). Formally combining different lines of evidence in extreme-event attribution. Advances in Statistical Climatology, Meteorology and Oceanography, 10(2), 159-171.
+#' }
+#'
+#' @param models_in Data.frame with one row per dataset, with columns "est", "lower" and "upper" giving the best estimate and lower and upper bounds for the quantity of interest. Dataset names should be given as rownames.
+#' @return Data.frame with the same models and rows, with infinite values replaced with finite values (where possible).
+#' @export
+#'
+infer_infinite <- function(models_in) {
+
+  # split out the columns for easier reference
+  est <- est_n <- models_in[,1]
+  l <- l_n <- models_in[,2]
+  u <- u_n <- models_in[,3]
+
+  # relabel where infinite best estimate / upper bound occurs
+  mnames <- rownames(models_in)
+  mnames <- paste0(mnames, c("*","")[is.finite(est)+1])
+  mnames <- paste0(mnames, c("*","")[is.finite(u)+1])
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # INFINITE BEST ESTIMATES / UPPER BOUNDS
+  # get upper bound where best estimate is infinite
+  u_n[!is.finite(u_n)] <- (exp(log(est) + 3 * (log(est) - log(l))))[!is.finite(u_n)]
+
+  # get best estimate, if infinite
+  if(any(is.finite(u))) {
+    # if any estimated upper bounds are finite, use the maximum upper bound to infer infinite best estimates
+    f_upper <- max(u[is.finite(u)])
+  } else {
+    # otherwise, use the maximum inferred upper bound to infer infinite best estimates
+    f_upper <- max(u_n[is.finite(u_n)])
+  }
+  est_n[!is.finite(est_n)] <- f_upper
+
+  # repeat estimation of upper bound using inferred best estimate
+  u_n[!is.finite(u_n)] <- (exp(log(est_n) + 3 * (log(est_n) - log(l))))[!is.finite(u_n)]
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # INFINITE LOWER BOUNDS NOT YET IMPLEMENTED
+
+  return(data.frame("est" = est_n, "lower" = l_n, "upper" = u_n, row.names = mnames))
+}
