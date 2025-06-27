@@ -163,8 +163,8 @@ plot_covtrend <- function(mdl, xcov, trend_cov = NA, ci_cov = NA,  ci_col = "bla
 
   # trend lines
   lines(x[o], loc, lwd = 3, col = "black", lty = 1)
-  lines(x[o], rp1, col = "blue", lwd = 3, lty = 1)
-  lines(x[o], rp2, col = "blue", lwd = 2, lty = 1)
+  lines(x[o], rl1, col = "blue", lwd = 3, lty = 1)
+  lines(x[o], rl2, col = "blue", lwd = 2, lty = 1)
 
   # get confidence interval for mu' (if not required, set ci_cov to NA)
   if(!is.na(nsamp)) {
