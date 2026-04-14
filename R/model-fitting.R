@@ -157,7 +157,7 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm = NA, lower = F,
 #' @export
 #'
 refit <- function(mdl, new_data) {
-  fit_ns(dist = mdl$dist, type = mdl$type, data = new_data, varnm = mdl$varnm, covnm = mdl$covnm, lower = mdl$lower, ev = mdl$ev)
+  fit_ns(dist = mdl$dist, type = mdl$type, data = new_data, varnm = mdl$varnm, covnm = mdl$covnm, lower = mdl$lower, ev = mdl$ev, method = mdl$method)
 }
 
 ################################################################################################################################
