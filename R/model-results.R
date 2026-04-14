@@ -199,8 +199,8 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
   #if(di_relative) { di_cnm <- "dI_rel" } else { di_cnm <- "dI_abs" }
 
   # get bootstrapped intervals, select only the elements of interest
-  ci_eval <- boot_ci(mdl_eval, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp)[key_par,,drop = F]
-  ci_attr <- boot_ci(mdl_attr, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp)
+  ci_eval <- boot_ci(mdl_eval, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp, ci = ci)[key_par,,drop = F]
+  ci_attr <- boot_ci(mdl_attr, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp, ci = ci)
   n_attr <- setNames(ci_attr["n",], paste0("attr_", c("nobs", "nsamp", "nfailed")))
   ci_attr <- ci_attr[grepl("PR|dI_abs|dI_rel", rownames(ci_attr)),]
 
@@ -223,7 +223,7 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
     mdl_proj <- refit(mdl, new_data = df[df$year <= y_fut,])
 
     # bootstrap results
-    ci_proj <- boot_ci(mdl_proj, cov_f = cov_f, cov_cf = cov_fut, ev = event_rl, rp = rp, nsamp = nsamp)
+    ci_proj <- boot_ci(mdl_proj, cov_f = cov_f, cov_cf = cov_fut, ev = event_rl, rp = rp, nsamp = nsamp, ci = ci)
     n_proj <- setNames(ci_proj["n",], paste0("proj_", c("nobs", "nsamp", "nfailed")))
     ci_proj <- ci_proj[grepl("PR|dI_abs|dI_rel", rownames(ci_proj)),]
 
