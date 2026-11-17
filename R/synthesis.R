@@ -262,9 +262,9 @@ plot_synthesis <- function(synth, xlim, lwd = 10, xlab = "", main = "", add_spac
 
   gcols <- gcols[synth$group]
 
-  segments(y0 = yy, x0 = synth$l_wb, x1 = synth$u_wb, lwd = lwd, col = "black", lend = 2)
-  segments(y0 = yy, x0 = synth$l_wb, x1 = synth$u_wb, lwd = lwd-2, col = "white", lend = 2)
-  segments(y0 = yy, x0 = synth$lower, x1 = synth$upper, lwd = lwd, col = gcols, lend = 1)
+  h1 <- 0.18 
+  rect(xleft = synth$lower, ybottom = yy - h1, xright = synth$upper, ytop = yy + h1, col = gcols, border= NA)
+  rect(xleft = synth$l_wb, ybottom = yy - h1, xright = synth$u_wb, ytop = yy + h1, col = NA, border = "black", lwd = 1)
   points(synth$est, yy, pch = 21, bg = gcols, lwd = 2, cex = lwd/10)
 
   if(!hide_labels) axis(2, at = yy, labels = synth$model, las = 1)
