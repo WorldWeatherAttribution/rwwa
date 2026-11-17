@@ -42,9 +42,11 @@ plot_trend <- function(mdl, ev, ev_year, rp = c(6, 40), add_loess = T, loess_col
     legend_lwd = c(legend_lwd,c(lwd,max(1,lwd -1))[1:length(rp)])
   }
 
-  plot(mdl$data$year, mdl$data[,mdl$varnm], type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = xlab,
-       ylab = ylab, main = main, xlim = xlim, ylim = ylim)
-
+  plot(mdl$data$year, mdl$data[,mdl$varnm], type = "S", lwd = lwd, col = adjustcolor("black", 0.5), xlab = "",
+       ylab = "", main = main, xlim = xlim, ylim = ylim)
+  mtext(xlab, side = 1, line = 2.5, cex = par("cex.lab"))
+  mtext(ylab, side = 2, line = 2.5, cex = par("cex.lab"))
+  
   loc <- ns_pars(mdl)$loc
   rl1 <- eff_return_level(mdl, rp[1])
   rl2 <- eff_return_level(mdl, rp[2])
