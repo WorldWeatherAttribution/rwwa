@@ -3,15 +3,15 @@
 #' Define available plotting region in Jupyter notebook (and set default graphical pars)
 #'
 #' @param rc Vector setting the number of rows and columns. Default is c(1,1)
-#' @param w Scalar setting the width of each of the (r,c) plotting regions. Default is 4
-#' @param h Scalar setting the height of each of the (r,c) plotting regions. Default is 4
-#' @param res Scalar setting the resolution of the plots. Default is 200.
+#' @param w Scalar setting the width of each of the (r,c) plotting regions. Default is 7
+#' @param h Scalar setting the height of each of the (r,c) plotting regions. Default is 7
+#' @param res Scalar setting the resolution of the plots. Default is 120
 #' @param pch Set default plotting character. Default is 20 (small filled circles)
 #' @param ... Additional graphical parameters to be passed to par()
 #'
 #' @export
 #'
-prep_window <- function(rc = c(1,1), w = 4, h = 4, res = 200, pch = 20, ...) {
+prep_window <- function(rc = c(1,1), w = 7, h = 7, res = 120, pch = 20, ...) {
   options(repr.plot.width = rc[2]*w, repr.plot.height = rc[1]*h, repr.plot.res = res)
   par(mfrow = rc, pch = pch, ...)
 }
