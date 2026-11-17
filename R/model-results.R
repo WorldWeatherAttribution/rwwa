@@ -82,6 +82,9 @@ mdl_ests <- function(mdl, cov_f, cov_cf, ev, rp = NA) {
 boot_ci <- function(mdl, cov_f, cov_cf, ev, rp = NA, seed = 42, nsamp = 500, ci = 0.95, return_sample = F) {
 
   alpha <- 1-ci
+  
+  # display warning if using small sample size
+  if(nsamp < 100) warning(paste0("Bootstrapping with only ",nsamp," samples"))
 
   # if event value not provided, get stored value from fitted model
   if(missing(ev)) ev <- mdl$ev
