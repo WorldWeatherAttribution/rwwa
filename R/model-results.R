@@ -54,6 +54,10 @@ mdl_ests <- function(mdl, cov_f, cov_cf, ev, rp = NA) {
     # could also reverse transformation on model parameters here, if preferred
   }
 
+  # get correlations between all variables
+  rho <- cor(mdl$data[,c(mdl$varnm, mdl$covnm)])
+  corrs <- setNames(rho[upper.tri(rho)], paste0("corr_",outer(rownames(rho), colnames(rho), paste, sep = ".")[upper.tri(rho)]))
+  
   return(c(mdl$par, "disp" = disp, "event_magnitude" = ev, "return_period" = rp, changes, "aic" = aic(mdl)))
 }
 
@@ -201,7 +205,9 @@ cmodel_results <- function(mdl, rp = 10, cov_f, cov_hist, cov_fut,
   #if(di_relative) { di_cnm <- "dI_rel" } else { di_cnm <- "dI_abs" }
 
   # get bootstrapped intervals, select only the elements of interest
-  ci_eval <- boot_ci(mdl_eval, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp, ci = ci)[key_par,,drop = F]
+  ci_eval <- boot_ci(mdl_eval, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp, ci = ci)
+  ci_eval <- ci_eval[c(key_par, rownames(ci_eval)[grepl("corr", rownames(ci_eval))]),,drop = F]
+  
   ci_attr <- boot_ci(mdl_attr, cov_f = cov_f, cov_cf = cov_hist, ev = event_rl, rp = rp, nsamp = nsamp, ci = ci)
   n_attr <- setNames(ci_attr["n",], paste0("attr_", c("nobs", "nsamp", "nfailed")))
   ci_attr <- ci_attr[grepl("PR|dI_abs|dI_rel", rownames(ci_attr)),]
