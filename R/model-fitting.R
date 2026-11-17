@@ -114,6 +114,9 @@ fit_ns <- function(dist, type = "fixeddisp", data, varnm, covnm = NA, lower = F,
   fitted[["data"]] <- data
   fitted[["x"]] <- x
   fitted[["cov"]] <- cov
+  fitted[["method"]] <- method
+  
+  if (fitted$convergence != 0) warning("Model did not converge")
 
   fitted[["lower"]] <- lower               # saves having to specify every time later on
   fitted[["minima"]] <- minima             # look at maxima of 0-temps, rather than minima of observed temps

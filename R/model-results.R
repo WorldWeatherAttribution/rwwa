@@ -117,15 +117,17 @@ boot_ci <- function(mdl, cov_f, cov_cf, ev, rp = NA, seed = 42, nsamp = 500, ci 
   f <- 0 # keep track of number of failures
   while(length(boot_res) < nsamp) {
     boot_df <- mdl$data[sample(1:nrow(mdl$data), replace = T),]
-    tryCatch({
-      boot_mdl <- refit(mdl, new_data = boot_df)
+    boot_mdl <- try(refit(mdl, new_data = boot_df))
+    
+    # check whether model fitting worked
+    if(inherits(boot_mdl,"try-error")) {
+      # increment failure counter
+      f <- f + 1
+    } else {
+      # add results to list & increment success counter
       boot_res[[i]] <- mdl_ests(boot_mdl, cov_f, cov_cf, ev = ev, rp = rp)
-      i <- i+1
-    },
-    error = function(cond) {
-      f <- f+1
-      return(NULL)
-    })
+      i <- i + 1
+    }
   }
   boot_res <- do.call("cbind",boot_res)
   if(return_sample) {
