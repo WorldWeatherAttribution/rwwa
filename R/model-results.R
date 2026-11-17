@@ -13,20 +13,20 @@
 #' @export
 #'
 mdl_ests <- function(mdl, cov_f, cov_cf, ev, rp = NA) {
-
+  
   if(nrow(cov_f) > 1) {
     print("cov_f has more than one row: only first row will be used as factual covariates")
     cov_f <- cov_f[1,,drop = F]
   }
-
+  
   if(!all(c(sapply(mdl$covnm, function(cnm) cnm %in% colnames(cov_f)), sapply(mdl$covnm, function(cnm) cnm %in% colnames(cov_cf))))) {
     print("Not all model covariates appear in factual/counterfactual covariates: missing covariates will be assumed to be zero throughout")
   }
-
+  
   pars <- mdl$par
   current_pars <- ns_pars(mdl, fixed_cov = cov_f)
   disp <- current_pars$scale / current_pars$loc
-
+  
   if(is.na(rp)) {
     # if no fixed RP is given, estimate it from the event value
     if(missing(ev)) ev <- mdl$ev
@@ -35,26 +35,32 @@ mdl_ests <- function(mdl, cov_f, cov_cf, ev, rp = NA) {
     # if fixed RP given, use it to bootstrap the expected magnitude of the event value
     ev <- eff_return_level(mdl, rp, fixed_cov = cov_f)
   }
-
+  
   # loop over counterfactual covariates (if necessary) & get PRs and intensity changes
   if(nrow(cov_cf) == 1) {
     changes <- c("PR" = prob_ratio(mdl, ev, cov_f, cov_cf),
                  "dI_abs" = tryCatch(int_change(mdl, rp, cov_f, cov_cf, relative = F), error = function(cond) {return(NA)}),
-                 "dI_rel" = tryCatch(int_change(mdl, rp, cov_f, cov_cf, relative = T), error = function(cond) {return(NA)}))
+                 "dI_rel" = tryCatch(int_change(mdl, rp, cov_f, cov_cf, relative = T), error = function(cond) {return(NA)}),
+                 "event_magnitude_cf" = tryCatch(eff_return_level(mdl, rp, fixed_cov = cov_cf), error = function(cond) {return(NA)}),
+                 "prob_cf" = tryCatch(map_to_u(mdl,ev,fixed_cov = cov_cf), error = function(cond) {return(NA)}),
+                 "return_period_cf" = tryCatch(1/map_to_u(mdl,ev,fixed_cov = cov_cf), error = function(cond) {return(NA)}))
   } else {
     changes <- unlist(lapply(rownames(cov_cf), function(rnm) {
       pr <- prob_ratio(mdl, ev, cov_f, cov_cf[rnm,,drop = F])
       di_abs <- tryCatch(int_change(mdl, rp, cov_f, cov_cf[rnm,,drop = F], relative = F), error = function(cond) {return(NA)})
       di_rel <- tryCatch(int_change(mdl, rp, cov_f, cov_cf[rnm,,drop = F], relative = T), error = function(cond) {return(NA)})
-      setNames(c(pr, di_abs, di_rel), paste0(c("PR", "dI_abs", "dI_rel"), "_",rnm))
+      event_magnitude_cf <- tryCatch(eff_return_level(mdl, rp, fixed_cov = cov_cf[rnm,,drop = F]), error = function(cond) {return(NA)})
+      prob_cf <- tryCatch(map_to_u(mdl,ev,fixed_cov = cov_cf[rnm,,drop = F]), error = function(cond) {return(NA)})
+      rp_cf <- 1/prob_cf
+      setNames(c(pr, di_abs, di_rel, event_magnitude_cf, prob_cf,rp), paste0(c("PR", "dI_abs", "dI_rel","event_magnitude","prob","return_period"), "_",rnm))
     }))
   }
   if(mdl$dist %in% c("norm_logt")) {
     ev <- exp(ev)
     # could also reverse transformation on model parameters here, if preferred
   }
-
-  return(c(mdl$par, "disp" = disp, "event_magnitude" = ev, "return_period" = rp, changes, "aic" = aic(mdl)))
+  
+  return(c(mdl$par, "disp" = disp, "event_magnitude" = ev, "return_period" = rp, changes, "aic" = aic(mdl), rsquared(mdl)))
 }
 
 
